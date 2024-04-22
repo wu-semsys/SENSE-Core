@@ -1,0 +1,5 @@
+rdflib==6.3.2
+paho-mqtt==1.6.1
+rtamt==0.3.5
+requests==2.31.0 
+tenacity==8.2.3

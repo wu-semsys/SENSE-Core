@@ -1,0 +1,67 @@
+version: '3.7'
+
+services:
+
+  #
+  # Infrastructure
+  #
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0.18
+    container_name: mosquitto
+    command:
+      - mosquitto
+      - -c
+      - /mosquitto-no-auth.conf
+    ports:
+      - 1883:1883
+
+  # semantic-model:
+  #   build: ./infrastructure/semantic-model
+  #   container_name: semantic-model
+  #   ports:
+  #     - 7200:7200
+  #     - 7300:7300
+
+  # semantic-event-log:
+  #   build: ./infrastructure/semantic-event-log
+  #   container_name: semantic-event-log
+  #   ports:
+  #     - 7201:7200
+  #     - 7301:7300
+
+  # semantic-event-log-bridge:
+  #   build: ./infrastructure/semantic-event-log-bridge
+  #   container_name: semantic-event-log-bridge
+
+  # influxdb:
+  #   build: ./infrastructure/influxdb
+  #   container_name: influxdb
+  #   ports:
+  #     - 8086:8086
+      
+  # influxdb-writer:
+  #   build: ./infrastructure/influxdb-writer
+  #   container_name: influxdb-writer
+  #   depends_on:
+  #     - influxdb
+  
+  #
+  # Services
+  #
+
+  simple-event-detection:
+    container_name: simple-event-detection
+    build:
+      context: ./sense_core
+      dockerfile: simple_event_detection.Containerfile
+  
+  #
+  # Data Ingestion
+  #
+
+  data-ingestion:
+    container_name: data-ingestion
+    build:
+      context: ./sense_core
+      dockerfile: data_ingestion.Containerfile
