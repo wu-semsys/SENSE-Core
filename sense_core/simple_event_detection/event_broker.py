@@ -75,7 +75,7 @@ class MqttEventBroker:
         graph.add((observation_uri, SOSA["phenomenonTime"], Literal(event.timestamp)))
         graph.add((observation_uri, SOSA["usedProcedure"], event.procedure.uri))
         graph.add((observation_uri, SOSA["observedProperty"], event.procedure.property_uri))
-        graph.add((observation_uri, SENSE["detectedEvent"], event_uri))
+        graph.add((observation_uri, SOSA["hasResult"], event_uri))
         graph.add((event_uri, RDF["type"], SENSE["Event"]))
         graph.add((event_uri, SENSE["hasEventType"], event.procedure.event_type_uri))
 
