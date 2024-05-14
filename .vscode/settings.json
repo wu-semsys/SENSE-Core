@@ -1,0 +1,26 @@
+{
+    "python.autoComplete.extraPaths": ["./sense_core"],
+    "python.analysis.extraPaths": [
+        "./sense_core"
+    ],
+    "[python]": {
+        "editor.defaultFormatter": "ms-python.black-formatter",
+        "editor.formatOnSave": true,
+    },
+    "black-formatter.args": [
+        "--line-length", "120",
+    ],
+    "cSpell.words": [
+        "CONNACK",
+        "graphdb",
+        "mosquitto",
+        "mqtt",
+        "owlim",
+        "paho",
+        "rdfs",
+        "rdfsplus",
+        "rtamt",
+        "ruleset",
+        "sparql"
+    ]
+}

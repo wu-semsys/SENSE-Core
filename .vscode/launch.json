@@ -1,0 +1,34 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Simple Event Detection Service",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./simple_event_detection.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--config",
+                "./config/monitoring-service.host.json"
+            ],
+            "cwd": "${workspaceFolder}/sense_core"
+        },
+        {
+            "name": "Python: Data Ingestion",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./data_ingestion.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--config",
+                "./config/data-ingestion.host.json"
+            ],
+            "cwd": "${workspaceFolder}/sense_core"
+        }
+    ]
+}
