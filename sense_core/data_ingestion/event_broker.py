@@ -34,6 +34,12 @@ class MqttEventBroker:
         payload = graph.serialize(format="turtle")
         self.client.publish("events/sensors", payload)
 
+    def publish_system_message(self, message: str) -> None:
+        """
+        Publishes a new system event on the event broker.
+        """
+        self.client.publish("events/system", message)
+
 
 def create_mqtt_event_broker(configuration: MqttConfiguration) -> MqttEventBroker:
     client = mqtt.Client(client_id=configuration.client_id)

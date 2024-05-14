@@ -1,8 +1,9 @@
 import argparse
+import datetime
 import logging
 import time
 from typing import List
-from data_ingestion.configuration import DataIngestionConfiguration, load_configuration
+from data_ingestion.configuration import DataIngestionConfiguration, DataIngestionTimeConfiguration, load_configuration
 from data_ingestion.data_source import DataSource
 from data_ingestion.event_broker import create_mqtt_event_broker
 from data_ingestion.knowledge import DataIngestionKnowledgeRepository
@@ -17,6 +18,14 @@ def find_all_points(config: GraphDbConfiguration, influxDbConfig: InfluxDBConfig
     knowledge_repository = DataIngestionKnowledgeRepository(config, influxDbConfig)
     return knowledge_repository.find_all_points()
 
+def should_stop(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
+    return time_config.stop_at > now and time_config.stop_action == "stop"
+
+def should_repeat(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
+    return time_config.stop_at > now and time_config.stop_action == "repeat"
+
+def create_clock(time_config: DataIngestionTimeConfiguration) -> FakeClock:
+    return FakeClock(time_config.start_at, time_config.delta_in_seconds)
 
 def run_service(config: DataIngestionConfiguration) -> None:
     logging.basicConfig(level=logging.INFO)
@@ -36,7 +45,7 @@ def run_service(config: DataIngestionConfiguration) -> None:
     logging.info(f"Importing values from {len(data_sources)} data sources...")
 
     event_broker = create_mqtt_event_broker(config.mqtt)
-    clock = FakeClock(config.time.startAt, config.time.deltaInSeconds)
+    clock = create_clock(config.time)
     last_import = clock.now()
     clock.tick()
 
@@ -44,14 +53,25 @@ def run_service(config: DataIngestionConfiguration) -> None:
     while True:
         now = clock.now()
 
-        logging.info(f"Importing in range {last_import} - {now}")
+        if should_stop(config.time, now):
+            break;
 
-        for data_source in data_sources:
-            point_values = list(data_source.get_points(last_import, now))
-            logging.debug(f"Found {len(point_values)} values for {data_source.uri()}")
-            for timestamp, value in point_values:
-                event_broker.publish(SensorEvent(data_source.uri(), timestamp, value))
+        elif should_repeat(config.time, now):
+            clock = create_clock(config.time)
+            event_broker.publish_system_message("clear_scenario_data")
+            # Sleep for some time to wait for the other services to react
+            time.sleep(60)
+            
+        else:
+            logging.info(f"Importing in range {last_import} - {now}")
+            for data_source in data_sources:
+                point_values = list(data_source.get_points(last_import, now))
+                logging.debug(f"Found {len(point_values)} values for {data_source.uri()}")
+                for timestamp, value in point_values:
+                    event_broker.publish(SensorEvent(data_source.uri(), timestamp, value))
 
-        last_import = now
-        clock.tick()
-        time.sleep(1)
+            last_import = now
+            clock.tick()
+            time.sleep(1)
+    
+    logging.info("Shutting down Data Ingestion ...")

@@ -4,8 +4,13 @@ from shared.configuration import GraphDbConfiguration, InfluxDBConfiguration, Mq
 
 class DataIngestionTimeConfiguration:
     def __init__(self, config: dict):
-        self.startAt = datetime.datetime.fromisoformat(config["startAt"]).replace(tzinfo=datetime.timezone.utc)
-        self.deltaInSeconds = int(config["deltaInSeconds"])
+        self.start_at = datetime.datetime.fromisoformat(config["startAt"]).replace(tzinfo=datetime.timezone.utc)
+        self.delta_in_seconds = int(config["deltaInSeconds"])
+        self.stop_at = datetime.datetime.fromisoformat(config["stopAt"]).replace(tzinfo=datetime.timezone.utc)
+        self.stop_action = config["stopAction"]
+
+        if self.stop_action not in {"repeat", "stop"}:
+            raise Exception(f"Unknown Stop Action: {self.stop_action}")
 
 
 class DataIngestionConfiguration:
