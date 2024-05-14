@@ -42,7 +42,8 @@ class MqttEventBroker:
 
 
 def create_mqtt_event_broker(configuration: MqttConfiguration) -> MqttEventBroker:
-    client = mqtt.Client(client_id=configuration.client_id)
+    client_id = configuration.client_id +  "_" + str(uuid.uuid4())
+    client = mqtt.Client(client_id=client_id)
     client.connect(configuration.host, configuration.port)
 
     # Wait for the client to connect. This is due to the fact that the

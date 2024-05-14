@@ -18,14 +18,18 @@ def find_all_points(config: GraphDbConfiguration, influxDbConfig: InfluxDBConfig
     knowledge_repository = DataIngestionKnowledgeRepository(config, influxDbConfig)
     return knowledge_repository.find_all_points()
 
+
 def should_stop(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
-    return time_config.stop_at > now and time_config.stop_action == "stop"
+    return time_config.stop_at < now and time_config.stop_action == "stop"
+
 
 def should_repeat(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
-    return time_config.stop_at > now and time_config.stop_action == "repeat"
+    return time_config.stop_at < now and time_config.stop_action == "repeat"
+
 
 def create_clock(time_config: DataIngestionTimeConfiguration) -> FakeClock:
     return FakeClock(time_config.start_at, time_config.delta_in_seconds)
+
 
 def run_service(config: DataIngestionConfiguration) -> None:
     logging.basicConfig(level=logging.INFO)
@@ -54,14 +58,18 @@ def run_service(config: DataIngestionConfiguration) -> None:
         now = clock.now()
 
         if should_stop(config.time, now):
-            break;
+            break
 
         elif should_repeat(config.time, now):
             clock = create_clock(config.time)
+            logging.info("Restarting scenario. Sending system message...")
             event_broker.publish_system_message("clear_scenario_data")
             # Sleep for some time to wait for the other services to react
             time.sleep(60)
-            
+            logging.info(f"Restart complete. Starting from {clock.now()}")
+            last_import = clock.now()
+            clock.tick()
+
         else:
             logging.info(f"Importing in range {last_import} - {now}")
             for data_source in data_sources:
@@ -73,5 +81,5 @@ def run_service(config: DataIngestionConfiguration) -> None:
             last_import = now
             clock.tick()
             time.sleep(1)
-    
+
     logging.info("Shutting down Data Ingestion ...")
