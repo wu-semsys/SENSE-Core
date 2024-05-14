@@ -10,6 +10,8 @@ build-data-ingestion:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest ./sense_core/data_ingestion.Containerfile
     - docker push $CI_REGISTRY/sense/sense-core/data-ingestion
+  only:
+    - main
 
 build-simple-event-detection:
   stage: build
@@ -19,3 +21,5 @@ build-simple-event-detection:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest ./sense_core/simple_event_detection.Containerfile
     - docker push $CI_REGISTRY/sense/sense-core/simple-event-detection
+  only:
+    - main
