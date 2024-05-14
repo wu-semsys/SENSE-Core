@@ -66,3 +66,9 @@ class STLEventDetector:
 
         self.all_variables_initialized = True
         self.updates = dict()
+    
+    def reset_data(self) -> None:
+        self.old_value = False
+        self.updates = dict()
+        self.specification = create_logic_specification(self.procedure)
+        self.all_variables_initialized = False

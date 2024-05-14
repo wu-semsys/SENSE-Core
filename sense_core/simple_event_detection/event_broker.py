@@ -28,17 +28,23 @@ class EventBroker(ABC):
 
 
 class MqttEventBroker:
-    def __init__(self, client: mqtt.Client) -> None:
-        self.client = client
+    def __init__(self, mqtt_configuration: MqttConfiguration) -> None:
+        self.mqtt_configuration = mqtt_configuration
+        self.clients = []
 
     def loop(self, time_in_seconds: float) -> None:
-        self.client.loop(time_in_seconds)
+        per_client_loop = time_in_seconds / len(self.clients)
+        for client in self.clients:
+            client.loop(per_client_loop)
 
     def loop_forever(self) -> None:
-        self.client.loop_forever()
+        per_client_loop = 1
+        while True:
+            for client in self.clients:
+                client.loop(per_client_loop)
 
     def subscribe(self, topic: str, callback: Callable[[SensorEvent], None]) -> None:
-        def execute_callback(_0, _1, message) -> None:
+        def execute_callback(_1, _2, message) -> None:
             payload = Graph().parse(data=message.payload, format="turtle")
             observations = list(payload.triples((None, SOSA["madeObservation"], None)))
 
@@ -55,10 +61,23 @@ class MqttEventBroker:
                 callback(SensorEvent(sensor_uri, result_time.toPython(), has_result.toPython()))
 
         logging.info(f"Subscribing to topic: {topic}")
-        self.client.on_message = execute_callback
-        result, _ = self.client.subscribe(topic=[(topic, 0)])
+        client = create_mqtt_client(self.mqtt_configuration)
+        client.on_message = execute_callback
+        result, _ = client.subscribe(topic=[(topic, 0)])
         if result != mqtt.MQTT_ERR_SUCCESS:
             raise EventBrokerException("Could not subscribe to topic.")
+        self.clients.append(client)
+
+    def subscribe_to_system_event(self, callback: Callable[[str], None]) -> None:
+        def execute_callback(_1, _2, message) -> None:
+            callback(message.payload.decode())
+
+        client = create_mqtt_client(self.mqtt_configuration)
+        client.on_message = execute_callback
+        result, _ = client.subscribe(topic=[("events/system", 0)])
+        if result != mqtt.MQTT_ERR_SUCCESS:
+            raise EventBrokerException("Could not subscribe to topic.")
+        self.clients.append(client)
 
     def publish(self, event: DetectedEvent) -> None:
         """
@@ -84,10 +103,10 @@ class MqttEventBroker:
         payload = graph.serialize(format="turtle")
         self.client.publish("events/simple", payload)
 
-
-def create_mqtt_event_broker(configuration: MqttConfiguration) -> MqttEventBroker:
+def create_mqtt_client(configuration: MqttConfiguration) -> mqtt.Client:
     logging.info("Connecting to MQTT broker...")
-    client = mqtt.Client(client_id=configuration.client_id)
+    client_id = configuration.client_id + "_" + str(uuid.uuid4())
+    client = mqtt.Client(client_id=client_id)
     client.connect(configuration.host, configuration.port)
 
     # Wait for the client to connect. This is due to the fact that the
@@ -96,7 +115,7 @@ def create_mqtt_event_broker(configuration: MqttConfiguration) -> MqttEventBroke
     # the client can consume the CONNACK message from the broker.
     # https://github.com/eclipse/paho.mqtt.python/issues/454
     while not client.is_connected():
-       client.loop(timeout=1)
-    
+        client.loop(timeout=1)
+
     logging.info("MQTT broker connection established.")
-    return MqttEventBroker(client)
+    return client

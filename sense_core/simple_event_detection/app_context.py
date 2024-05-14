@@ -4,7 +4,7 @@ from simple_event_detection.configuration import MonitoringConfiguration
 from simple_event_detection.knowledge import MonitoringKnowledgeRepository
 from simple_event_detection.time import Clock, EventBasedClock
 from simple_event_detection.monitor import STLEventDetector
-from simple_event_detection.event_broker import MqttEventBroker, create_mqtt_event_broker
+from simple_event_detection.event_broker import MqttEventBroker
 from shared.model import SensorEvent
 
 
@@ -45,22 +45,27 @@ class AppContext:
         for monitor in self.monitors:
             monitor.on_new_event(event)
         self.clock.on_event(event)
+    
+    def on_new_system_event(self, event: str) -> None:
+        if event == "clear_scenario_data":
+            logging.info("Clearing event monitor states ...")
+            for monitor in self.monitors:
+                monitor.reset_data()
 
     def run(self) -> None:
         logging.info("Starting monitoring...")
-        self.event_broker.subscribe("events/sensors", lambda e: self.on_new_event(e))
+        self.event_broker.subscribe("events/sensors", self.on_new_event)
+        self.event_broker.subscribe_to_system_event(self.on_new_system_event)
         while True:
             self.event_broker.loop(1)  # Handle incoming/outgoing events for 1 second
-            self.evaluate_monitors()  # Recalculate monitored signals
+            self.evaluate_monitors()   # Recalculate monitored signals
 
 
 def create_app_context(config: MonitoringConfiguration) -> AppContext:
     clock = EventBasedClock()
     graphdb_repository = MonitoringKnowledgeRepository(config.graphdb)
 
-    # Create event connection factory
-    event_broker = create_mqtt_event_broker(config.mqtt)
-
+    event_broker = MqttEventBroker(config.mqtt)
     app_context = AppContext(clock, event_broker, graphdb_repository)
     app_context.initialize()
     return app_context
