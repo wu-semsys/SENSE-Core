@@ -31,6 +31,7 @@ class MqttEventBroker:
     def __init__(self, mqtt_configuration: MqttConfiguration) -> None:
         self.mqtt_configuration = mqtt_configuration
         self.clients = []
+        self.publish_client = create_mqtt_client(mqtt_configuration)
 
     def loop(self, time_in_seconds: float) -> None:
         per_client_loop = time_in_seconds / len(self.clients)
@@ -101,7 +102,8 @@ class MqttEventBroker:
         logging.info(f"Event Detected: {str(event_uri)}")
 
         payload = graph.serialize(format="turtle")
-        self.client.publish("events/simple", payload)
+        self.publish_client.publish("events/simple", payload)
+
 
 def create_mqtt_client(configuration: MqttConfiguration) -> mqtt.Client:
     logging.info("Connecting to MQTT broker...")
