@@ -4,6 +4,8 @@ default:
 
 build-data-ingestion:
   stage: build
+  tags:
+    - linux-docker-runner
   services:
     - docker:20.10.16-dind
   script:
@@ -15,6 +17,8 @@ build-data-ingestion:
 
 build-simple-event-detection:
   stage: build
+  tags:
+    - linux-docker-runner
   services:
     - docker:20.10.16-dind
   script:
