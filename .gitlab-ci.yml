@@ -10,7 +10,7 @@ build-data-ingestion:
     - docker:20.10.16-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest --file data_ingestion.Containerfile ./sense_core
+    - docker build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest --file ./sense_core/data_ingestion.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/data-ingestion
   only:
     - main
@@ -23,7 +23,7 @@ build-simple-event-detection:
     - docker:20.10.16-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest --file simple_event_detection.Containerfile ./sense_core
+    - docker build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest --file ./sense_core/simple_event_detection.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/simple-event-detection
   only:
     - main
