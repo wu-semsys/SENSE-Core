@@ -8,6 +8,7 @@ from shared.mqtt_utils import wait_for_mqtt_broker
 def run_service(config: MonitoringConfiguration) -> None:
     logging.basicConfig(level=logging.INFO)
     logging.info("Monitoring Service starting...")
+    logging.info("Config: " + str(config))
 
     wait_for_mqtt_broker(config.mqtt)
     wait_for_graphdb(config.graphdb)
