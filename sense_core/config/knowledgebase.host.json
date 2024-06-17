@@ -1,0 +1,17 @@
+{
+    "graph-database": {
+        "user": "username",
+        "password": "password",
+        "repo-url": "http://127.0.0.1:7200/repositories/sense/",
+        "repo-mgmt-api-url": "http://127.0.0.1:7200/rest/repositories",
+        "repo-config-file": "./graphdb-repo-config.ttl"
+    },
+    "named-graphs": [
+        {
+            "uri": "urn:x-arq:DefaultGraphNode",
+            "ttl_files": [
+                "./data/SENSE.ttl"
+            ]
+        }
+    ]
+}
