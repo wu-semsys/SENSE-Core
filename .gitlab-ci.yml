@@ -27,3 +27,16 @@ build-simple-event-detection:
     - docker push $CI_REGISTRY/sense/sense-core/simple-event-detection
   only:
     - main
+
+build-knowledgebase:
+  stage: build
+  tags:
+    - linux-docker-runner
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/sense/sense-core/knowledgebase:latest --file ./sense_core/knowledgebase.Containerfile ./sense_core
+    - docker push $CI_REGISTRY/sense/sense-core/knowledgebase
+  only:
+    - main
