@@ -24,7 +24,7 @@ The SENSE Core is a result of the Semantics-based Explanation of Cyber-physical 
 
 ## SENSE Core Structure
 
-This repository provides the necessary containers making up the SENSE Core. Note that the SENSE Core itself is not an executable application as it lacks use-case specific configuration. For a demo instantiation of the SENSE Core, please refer to  [Demo Instantiation](#) (TODO: Insert Link to BIFROST Demo instantiation).
+This repository provides the necessary containers making up the SENSE Core. Note that the SENSE Core itself is not an executable application as it lacks use-case specific system data. For a demo instantiation of the SENSE Core, please refer to  [Demo Instantiation](#) (TODO: Insert Link to BIFROST Demo instantiation).
 
 ![SENSE Core Container Structure](./doc/SENSE-Core-C4-Model-Level2-ContainerDiagram.png)
 
@@ -36,6 +36,7 @@ The structure and interdependencies of the SENSE Core components are as follows:
 
 ## Instantiation and Execution
 As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". You can also use our demo instantiation of the SENSE Core to quickly start with a running demo application.
+
 
 1. **Prepare the Configuration**
    - Detail the initial setup and configuration requirements.
