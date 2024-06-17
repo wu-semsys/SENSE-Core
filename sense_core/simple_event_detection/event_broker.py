@@ -32,6 +32,7 @@ class MqttEventBroker:
         self.mqtt_configuration = mqtt_configuration
         self.clients = []
         self.publish_client = create_mqtt_client(mqtt_configuration)
+        self.publish_client.loop_start()
 
     def loop(self, time_in_seconds: float) -> None:
         per_client_loop = time_in_seconds / len(self.clients)
