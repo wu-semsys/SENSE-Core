@@ -57,7 +57,7 @@ def wait_for_graphdb(config: GraphDbConfiguration) -> None:
     logging.info("GraphDB is running.")
 
 
-@retry(wait=wait_fixed(2), stop=stop_after_attempt(10))
+@retry(wait=wait_fixed(2), stop=stop_after_attempt(30))
 def try_connecting_to_graphdb(config: GraphDbConfiguration) -> bool:
     # Make an HTTP request to graphdb to see if it is running.
     try:
