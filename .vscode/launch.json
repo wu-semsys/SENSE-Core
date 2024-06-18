@@ -29,6 +29,19 @@
                 "./config/data-ingestion.host.json"
             ],
             "cwd": "${workspaceFolder}/sense_core"
+        },
+        {
+            "name": "Python: Knowledgebase Data Import",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./knowledgebase/data_importer.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--config",
+                "./config/knowledgebase.seehub.json"
+            ],
+            "cwd": "${workspaceFolder}/sense_core"
         }
     ]
 }
