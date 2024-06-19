@@ -53,3 +53,16 @@ build-semantic-event-log-bridge:
     - docker push $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge
   only:
     - main
+
+build-event-to-state-causality:
+  stage: build
+  tags:
+    - linux-docker-runner
+  services:
+    - docker:20.10.16-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core
+    - docker push $CI_REGISTRY/sense/sense-core/event-to-state-causality
+  only:
+    - main
