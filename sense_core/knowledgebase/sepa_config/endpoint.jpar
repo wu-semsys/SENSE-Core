@@ -1,0 +1,17 @@
+{
+  "host": "localhost",
+  "sparql11protocol": {
+    "protocol": "http",
+    "port": 7200,
+    "query": {
+      "path": "/repositories/sense-dataset",
+      "method": "POST",
+      "format": "JSON"
+    },
+    "update": {
+      "path": "/repositories/sense-dataset/statements",
+      "method": "POST",
+      "format": "JSON"
+    }
+  }
+}

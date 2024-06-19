@@ -12,6 +12,13 @@ ENV GDB_JAVA_OPTS "-Xmx3g -Xms3g \
 
 RUN apk add --no-cache python3 py3-pip iptables
 
+# download GraphDB compatible version of SEPA
+WORKDIR /opt/sepa
+RUN wget https://github.com/tfruehwirth/SEPA-for-GraphDB/releases/download/v0.14.3-allow-statuscode-204/engine-v0.14.3-allow-statuscode-204.jar
+
+# copy sepa logging config to image
+COPY ./knowledgebase/sepa_config/log4j2.xml /opt/sepa/log4j2.xml
+
 # use a python script that, when the container starts, creates the repository, imports SENSE.ttl, and then imports the system data
 COPY ./knowledgebase/data_importer.py /opt/knowledgebase/data_importer.py
 COPY ./knowledgebase/configuration.py /opt/knowledgebase/configuration.py

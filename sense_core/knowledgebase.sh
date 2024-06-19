@@ -1,6 +1,6 @@
 #!/bin/bash
-echo "This container runs GRAPHDB"
-echo "When graphdb has been started, it creates a repository, and imports the SENSE Semantic Model and the System Data into the corresponding named graphs"
+echo "This container runs GraphDB and SPARQL Event Processing Architecture (SEPA)"
+echo "When GraphDB has been started, it creates a repository, and imports the SENSE Semantic Model and the System Data into the corresponding named graphs"
 
 set -x #echo on
 
@@ -22,6 +22,9 @@ iptables -A INPUT -p tcp --dport 7200 -j DROP
     # drop all firewall rules (which now allows traffic to port 7200)
     iptables -F
     echo "GRAPHDB started"
+
+    # start SEPA
+    java -Dlog4j.configurationFile=/opt/sepa/log4j2.xml -jar /opt/sepa/engine-v0.14.3-allow-statuscode-204.jar -endpoint=/opt/sepa/endpoint.jpar -engine=/opt/sepa/engine.jpar &
 ) &
 
 # start graphdb

@@ -1,0 +1,46 @@
+host: 127.0.1.1
+sparql11protocol:
+    protocol: http
+    port: 8000
+    query:
+        path: /sparql
+        method: POST
+        format: JSON
+    update:
+        path: /sparql 
+        method: POST
+        format: JSON
+sparql11seprotocol:
+    protocol: ws
+    availableProtocols:
+        ws:
+            port: 9000
+            path: /subscribe
+extended:
+    type: basic
+    base: 0
+    clients: 10
+    messages: 1
+graphs:
+    sense: http://sense-project.net/sepa-test-graph
+namespaces:
+    schema: http://schema.org
+    rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns#
+    rdfs: http://www.w3.org/2000/01/rdf-schema#
+    test: http://wot.arces.unibo.it/test#
+    sense: http://w3.org/ns/sense/
+updates:
+    INSERT_GREETING:
+        sparql: insert data {test:Francesco test:dice 'Ciao'}
+    INSERT_VARIABLE_GREETING:
+        sparql: insert data {?nome test:dice ?qualcosa}
+        forcedBindings:
+            nome:
+                type: uri
+                value: ""
+            qualcosa:
+                type: literal
+                value: ""
+queries:
+    QUERY_GREETINGS:
+        sparql: select * where {?nome test:dice ?qualcosa}
