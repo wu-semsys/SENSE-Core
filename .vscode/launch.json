@@ -42,6 +42,19 @@
                 "./config/knowledgebase.seehub.json"
             ],
             "cwd": "${workspaceFolder}/sense_core"
+        },
+        {
+            "name": "Python Debugger: Semantic Event Log Bridge",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "./semantic_event_log_bridge/semantic_event_log_bridge.py",
+            "console": "integratedTerminal",
+            "justMyCode": true,
+            "args": [
+                "--config",
+                "./config/semantic_event_log_bridge.json"
+            ],
+            "cwd": "${workspaceFolder}/sense_core"
         }
     ]
 }
