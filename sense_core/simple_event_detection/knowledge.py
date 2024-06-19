@@ -21,7 +21,7 @@ class MonitoringKnowledgeRepository:
             """
             PREFIX s: <http://w3id.org/explainability/sense#>
             PREFIX sosa: <http://www.w3.org/ns/sosa/>
-            PREFIX ssn: <https://www.w3.org/ns/ssn/>
+            PREFIX ssn: <http://www.w3.org/ns/ssn/>
 
             select ?eventDetection ?formula ?sensor ?property ?eventType where { 
                 ?eventDetection rdf:type s:EventDetection ;
