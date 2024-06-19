@@ -80,6 +80,6 @@ def run_service(config: DataIngestionConfiguration) -> None:
 
             last_import = now
             clock.tick()
-            time.sleep(1)
+            time.sleep(config.time.sleep_in_seconds)
 
     logging.info("Shutting down Data Ingestion ...")
