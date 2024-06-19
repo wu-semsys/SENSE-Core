@@ -14,10 +14,7 @@ SENSE = Namespace("http://w3id.org/explainability/sense#")
 
 
 class EventBroker(ABC):
-    def loop(self, time_in_seconds: float) -> None:
-        pass
-
-    def loop_forever(self) -> None:
+    def loop_start(self) -> None:
         pass
 
     def subscribe(self, signal_uri: str, topic: str, callback: Callable[[SensorEvent], None]) -> None:
@@ -34,16 +31,9 @@ class MqttEventBroker:
         self.publish_client = create_mqtt_client(mqtt_configuration)
         self.publish_client.loop_start()
 
-    def loop(self, time_in_seconds: float) -> None:
-        per_client_loop = time_in_seconds / len(self.clients)
+    def loop_start(self) -> None:
         for client in self.clients:
-            client.loop(per_client_loop)
-
-    def loop_forever(self) -> None:
-        per_client_loop = 1
-        while True:
-            for client in self.clients:
-                client.loop(per_client_loop)
+            client.loop_start()
 
     def subscribe(self, topic: str, callback: Callable[[SensorEvent], None]) -> None:
         def execute_callback(_1, _2, message) -> None:

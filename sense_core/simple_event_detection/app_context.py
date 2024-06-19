@@ -1,4 +1,5 @@
 import logging
+import time
 from typing import List
 from simple_event_detection.configuration import MonitoringConfiguration
 from simple_event_detection.knowledge import MonitoringKnowledgeRepository
@@ -40,12 +41,12 @@ class AppContext:
     def evaluate_monitors(self) -> None:
         for monitor in self.monitors:
             monitor.evaluate()
-    
+
     def on_new_event(self, event: SensorEvent) -> None:
         for monitor in self.monitors:
             monitor.on_new_event(event)
         self.clock.on_event(event)
-    
+
     def on_new_system_event(self, event: str) -> None:
         if event == "clear_scenario_data":
             logging.info("Clearing event monitor states ...")
@@ -56,9 +57,10 @@ class AppContext:
         logging.info("Starting monitoring...")
         self.event_broker.subscribe("events/sensors", self.on_new_event)
         self.event_broker.subscribe_to_system_event(self.on_new_system_event)
+        self.event_broker.loop_start()
         while True:
-            self.event_broker.loop(1)  # Handle incoming/outgoing events for 1 second
-            self.evaluate_monitors()   # Recalculate monitored signals
+            self.evaluate_monitors()  # Recalculate monitored signals
+            time.sleep(2)
 
 
 def create_app_context(config: MonitoringConfiguration) -> AppContext:
