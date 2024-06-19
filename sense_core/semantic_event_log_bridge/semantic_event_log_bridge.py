@@ -1,12 +1,21 @@
 import argparse
 import logging
 import paho.mqtt.client as mqtt
-from rdflib import Graph
+from rdflib import Graph, Namespace
 import requests
 from configuration import GraphDbConfiguration, MqttConfiguration, load_configuration
 from tenacity import retry, stop_after_attempt, wait_fixed
 import json
 
+SOSA = Namespace("http://www.w3.org/ns/sosa/")
+
+def extract_has_result(graph: Graph):
+    has_result_values = []
+    
+    for subject, predicate, obj in graph.triples((None, SOSA.hasResult, None)):
+        has_result_values.append(obj)
+    
+    return has_result_values
 
 @retry(wait=wait_fixed(2), stop=stop_after_attempt(10))
 def connect_to_mqtt_broker(config: MqttConfiguration) -> mqtt.Client:
@@ -64,6 +73,15 @@ if __name__ == "__main__":
             try:
                 new_dynamic_graph = Graph().parse(data=msg.payload, format="turtle")
                 insert_graph(config.event_log, new_dynamic_graph)
+                has_result_values = extract_has_result(new_dynamic_graph)
+                for value in has_result_values:
+                    logging.info(f"sosa:hasResult value: {value}")                        
+                    result = mqtt_client.publish("events/state", value)
+                    logging.debug(f"Sending {value} to events/state")
+                    if result.rc != mqtt.MQTT_ERR_SUCCESS:
+                        logging.error(f"Failed to publish message: {mqtt.error_string(result.rc)}")
+                    else:
+                        logging.debug("Message published successfully")
             except(Exception):
                 logging.error("Could not handle event. This may cause an incomplete semantic event log.")
 
