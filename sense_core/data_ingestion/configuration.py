@@ -6,6 +6,7 @@ class DataIngestionTimeConfiguration:
     def __init__(self, config: dict):
         self.start_at = datetime.datetime.fromisoformat(config["startAt"]).replace(tzinfo=datetime.timezone.utc)
         self.delta_in_seconds = int(config["deltaInSeconds"])
+        self.sleep_in_seconds = int(config["sleepInSeconds"])
         self.stop_at = datetime.datetime.fromisoformat(config["stopAt"]).replace(tzinfo=datetime.timezone.utc)
         self.stop_action = config["stopAction"]
 
