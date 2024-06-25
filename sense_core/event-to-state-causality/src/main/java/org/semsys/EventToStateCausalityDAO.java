@@ -10,6 +10,7 @@ import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import java.util.UUID;
 
 public class EventToStateCausalityDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventToStateCausalityDAO.class);
@@ -94,10 +95,11 @@ public class EventToStateCausalityDAO {
     }
 
     private String insertQueryManipulation() {
+		UUID uuid = UUID.randomUUID();
         String result = query.ADD_NEW_START_STATE
                 .replaceAll("eventURI2", eventURI)
                 .replaceAll("startedStateType", startedStateType.split("#")[1])
-                .replaceAll("eventURI", event);
+                .replaceAll("eventURI", uuid.toString());
         return result;
     }
 
