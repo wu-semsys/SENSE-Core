@@ -44,7 +44,7 @@
             "cwd": "${workspaceFolder}/sense_core"
         },
         {
-            "name": "Python Debugger: Semantic Event Log Bridge",
+            "name": "Python: Semantic Event Log Bridge",
             "type": "debugpy",
             "request": "launch",
             "program": "./semantic_event_log_bridge/semantic_event_log_bridge.py",

@@ -7,6 +7,7 @@
     "event_log": {
         "host": "localhost",
         "port": 7200,
-        "repository": "sense"
+        "repository": "sense",
+        "event-graph": "http://w3id.org/explainability/graph/sense_dynamic"
     }
 }
