@@ -64,54 +64,80 @@ public class Query {
             "    ?startedStateType s:hasStartEventType ?eventType .\n" +
             "}\n";
 
-    String ADD_CAUSALITY = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
-            "PREFIX sense: <http://example.org/sense-ontology#>\n" +
-            "PREFIX s: <http://w3id.org/explainability/sense#State>\n" +
+    String ADD_CAUSALITY = "PREFIX sense: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
-            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+            "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "insert{\n" +
-            "        ?causeState sense:causallyRelated ?effectState .\n" +
-            "    \tsense:causallyRelated rdf:label ?causalityType .\n" +
-            "    } \n" +
-            "where {\n" +
+            "    GRAPH <http://example.org/ActualStateCausality> {\n" +
+            "        ?causeState ?causalityType ?effectState . # is this allowed? ?causalRelation\n" +
+            "       \n" +
+            "   }\n" +
+            "}\n" +
+            "WHERE {\n" +
             "    # effect State\n" +
-            "    ?effectState a s:State .\n" +
-            "    ?effectState s:hasStateType ?effectStateType .\n" +
-            "    ?effectObservation sense:observedState ?effectState .\n" +
-            "    ?effectObservation sense:startTime ?effectStart .\n" +
-            "    ?effectObservation sense:endTime ?effectEnd .\n" +
+            "    ?effectState a sense:State .\n" +
+            "    ?effectState sense:hasStateType ?effectStateType .\n" +
+            "    ?effectObservation sosa:hasResult ?effectState .\n" +
+            "    ?effectState s:hasEndEvent ?endEvent .\n" +
+            "    ?effectState s:hasStartEvent ?startEvent .\n" +
             "    ?effectSensor sosa:madeObservation ?effectObservation .\n" +
             "    ?effectPlatform sosa:hosts ?effectSensor .\n" +
             "    ?effectParentPlatform sosa:hosts ?effectPlatform .\n" +
+            "    \n" +
+            "    OPTIONAL {\n" +
+            "        ?effectObservation1 sosa:hasResult ?endEvent .\n" +
+            "        ?endEvent a s:Event .\n" +
+            "        ?effectObservation1 sosa:phenomenonTime ?endTime .\n" +
+            "    }\n" +
+            "    OPTIONAL {\n" +
+            "        ?effectObservation2 sosa:hasResult ?startEvent .\n" +
+            "        ?startEvent a s:Event .\n" +
+            "        ?effectObservation2 sosa:phenomenonTime ?startTime .\n" +
+            "    }\n" +
+            "    \n" +
             "    # cause State\n" +
             "    ?causeState a sense:State .\n" +
             "    ?causeState sense:hasStateType ?causeStateType .\n" +
-            "    ?causeObservation sense:observedState ?causeState .\n" +
-            "    ?causeObservation sense:startTime ?causeStart .\n" +
-            "    ?causeObservation sense:endTime ?causeEnd .\n" +
+            "    ?causeObservation sosa:hasResult ?causeState .\n" +
+            "    ?causeState s:hasEndEvent ?causeEndEvent .\n" +
+            "    ?causeState s:hasStartEvent ?causeStartEvent .\n" +
             "    ?causeSensor sosa:madeObservation ?causeObservation .\n" +
             "    ?causePlatform sosa:hosts ?causeSensor .\n" +
             "    ?causeParentPlatform sosa:hosts ?causePlatform .\n" +
+            "    \n" +
+            "    OPTIONAL {\n" +
+            "        ?causeObservation1 sosa:hasResult ?causeEndEvent .\n" +
+            "        ?causeEndEvent a s:Event .\n" +
+            "        ?causeObservation1 sosa:phenomenonTime ?causeEnd .\n" +
+            "    }\n" +
+            "    OPTIONAL {\n" +
+            "        ?causeObservation2 sosa:hasResult ?causeStartEvent .\n" +
+            "        ?causeStartEvent a s:Event .\n" +
+            "        ?causeObservation2 sosa:phenomenonTime ?causeStart .\n" +
+            "    }\n" +
+            "\n" +
             "    {\n" +
-            "\tselect ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation\n" +
-            "\t\twhere { \n" +
-            "        ?stc a sense:StateTypeCausality .\n" +
-            "        ?stc sense:cause ?causeStateType .    \n" +
-            "        ?stc sense:effect ?effectStateType .\n" +
-            "        ?stc sense:causalityType ?causalityType .\n" +
-            "        ?stc sense:temporalRelation ?temporalRelation .\n" +
-            "        ?stc sense:platformRequirement ?platformRequirement .\n" +
-            "    \t}\n" +
-            "\t}\n" +
+            "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation WHERE { \n" +
+            "            ?stc a s:StateTypeCausality .\n" +
+            "            ?stc s:cause ?causeStateType .    \n" +
+            "            ?stc s:effect ?effectStateType .\n" +
+            "            ?stc s:hasCausalRelation ?causalityType .\n" +
+            "            ?stc s:hasTemporalRelation ?temporalRelation .\n" +
+            "            ?stc s:hasTopologicalRelation ?platformRequirement .\n" +
+            "        }\n" +
+            "    }\n" +
+            "\n" +
             "    BIND(\n" +
-            "    \tIF(?platformRequirement = \"samePlatform\", ?causePlatform = ?effectPlatform, \n" +
-            "    \tIF(?platformRequirement = \"parentPlatform\", ?causeParentPlatform = ?effectPlatform, \n" +
-            "    \tIF(?platformRequirement = \"siblingPlatform\", ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
+            "        IF(?platformRequirement = \"samePlatform\", ?causePlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = \"parentPlatform\", ?causeParentPlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = \"siblingPlatform\", ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
             "    )\n" +
             "    BIND(\n" +
-            "    \tIF(?temporalRelation= \"overlaps\", ?causeStart <= ?effectStart && ?effectStart <= ?causeEnd, \n" +
-            "    \tIF(?temporalRelation = \"before\", ?causeStart <= ?effectStart, true)) as ?temporal_filter\n" +
+            "        IF(?temporalRelation = \"overlaps\", ?causeTime <= ?effectTime && ?effectTime <= ?causeTime, \n" +
+            "        IF(?temporalRelation = \"before\", ?causeTime <= ?effectTime, true)) as ?temporal_filter\n" +
             "    )\n" +
-            "  \tFILTER(?Platform_filter && ?temporal_filter)\n" +
-            "} ";
+            "\n" +
+            "    FILTER(?Platform_filter && ?temporal_filter) \n" +
+            "}\n";
 }
