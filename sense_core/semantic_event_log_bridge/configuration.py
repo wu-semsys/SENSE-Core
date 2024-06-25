@@ -13,6 +13,7 @@ class GraphDbConfiguration:
         self.host = config["host"]
         self.port = config["port"]
         self.repository = config["repository"]
+        self.event_graph = config["event-graph"]
 
 
 class Configuration:

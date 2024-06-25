@@ -14,18 +14,23 @@ def connect_to_mqtt_broker(config: MqttConfiguration) -> mqtt.Client:
     client.connect(config.host, config.port)
     return client
 
+
 def delete_events_graph(config: GraphDbConfiguration):
     logging.debug(f"Deleting 'Events' graph...")
+    params = {"graph": config.event_graph}
     response = requests.delete(
-        f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/Events"
+        f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/service", params=params
     )
     if response.status_code != 204:
         logging.error(f"Could not delete 'Events' graph in GraphDB. Status code: {response.status_code}")
 
+
 def insert_graph(config: GraphDbConfiguration, graph: Graph):
     logging.debug(f"Inserting graph into GraphDB...")
+    params = {"graph": config.event_graph}
     response = requests.post(
-        f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/Events",
+        f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/service",
+        params=params,
         data=graph.serialize(format="turtle"),
         headers={"Content-Type": "text/turtle"},
     )
@@ -46,7 +51,6 @@ if __name__ == "__main__":
         json_data = json.loads(config_file.read())
         logging.info(json.dumps(json_data))
 
-
     # connect to the MQTT broker
     mqtt_client = connect_to_mqtt_broker(config.mqtt)
 
@@ -58,14 +62,14 @@ if __name__ == "__main__":
             if msg.payload.decode() == "clear_scenario_data":
                 logging.warning("Clearing scenario data by deleting named graph ...")
                 delete_events_graph(config.event_log)
-        
+
         else:
             logging.debug("Sending data to event log...")
             try:
                 new_dynamic_graph = Graph().parse(data=msg.payload, format="turtle")
                 insert_graph(config.event_log, new_dynamic_graph)
-            except(Exception):
-                logging.error("Could not handle event. This may cause an incomplete semantic event log.")
+            except Exception as e:
+                logging.error("Could not handle event. This may cause an incomplete semantic event log.", e)
 
     mqtt_client.on_message = send_data_to_event_log
 
