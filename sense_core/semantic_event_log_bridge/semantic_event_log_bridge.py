@@ -75,15 +75,15 @@ if __name__ == "__main__":
                 insert_graph(config.event_log, new_dynamic_graph)
                 has_result_values = extract_has_result(new_dynamic_graph)
                 for value in has_result_values:
-                    logging.info(f"sosa:hasResult value: {value}")                        
+                    logging.debug(f"sosa:hasResult value: {value}")                        
                     result = mqtt_client.publish("events/state", value)
                     logging.debug(f"Sending {value} to events/state")
                     if result.rc != mqtt.MQTT_ERR_SUCCESS:
                         logging.error(f"Failed to publish message: {mqtt.error_string(result.rc)}")
                     else:
                         logging.debug("Message published successfully")
-            except(Exception):
-                logging.error("Could not handle event. This may cause an incomplete semantic event log.")
+            except Exception as e:
+                logging.error("Could not handle event. This may cause an incomplete semantic event log.", e)
 
     mqtt_client.on_message = send_data_to_event_log
 
