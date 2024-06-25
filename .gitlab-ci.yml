@@ -62,7 +62,7 @@ build-event-to-state-causality:
     - docker:20.10.16-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core
+    - docker build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core/event-to-state-causality
     - docker push $CI_REGISTRY/sense/sense-core/event-to-state-causality
   only:
     - main
