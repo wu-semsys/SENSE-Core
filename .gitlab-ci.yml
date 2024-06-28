@@ -1,5 +1,5 @@
 default:
-  image: docker:20.10.16
+  image: docker:27.0.2
 
 
 build-data-ingestion:
@@ -7,10 +7,10 @@ build-data-ingestion:
   tags:
     - linux-docker-runner
   services:
-    - docker:20.10.16-dind
+    - docker:27.0.2-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest --platform linux/amd64,linux/arm64 --file ./sense_core/data_ingestion.Containerfile ./sense_core
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest --platform linux/amd64,linux/arm64 --file ./sense_core/data_ingestion.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/data-ingestion
   only:
     - main
@@ -20,10 +20,10 @@ build-simple-event-detection:
   tags:
     - linux-docker-runner
   services:
-    - docker:20.10.16-dind
+    - docker:27.0.2-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest --platform linux/amd64,linux/arm64 --file ./sense_core/simple_event_detection.Containerfile ./sense_core
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest --platform linux/amd64,linux/arm64 --file ./sense_core/simple_event_detection.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/simple-event-detection
   only:
     - main
@@ -33,10 +33,10 @@ build-knowledgebase:
   tags:
     - linux-docker-runner
   services:
-    - docker:20.10.16-dind
+    - docker:27.0.2-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/knowledgebase:latest --platform linux/amd64,linux/arm64 --file ./sense_core/knowledgebase.Containerfile ./sense_core
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase:latest --platform linux/amd64,linux/arm64 --file ./sense_core/knowledgebase.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/knowledgebase
   only:
     - main
@@ -46,10 +46,10 @@ build-semantic-event-log-bridge:
   tags:
     - linux-docker-runner
   services:
-    - docker:20.10.16-dind
+    - docker:27.0.2-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge:latest --platform linux/amd64,linux/arm64 --file ./sense_core/semantic_event_log_bridge.Containerfile ./sense_core
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge:latest --platform linux/amd64,linux/arm64 --file ./sense_core/semantic_event_log_bridge.Containerfile ./sense_core
     - docker push $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge
   only:
     - main
@@ -59,10 +59,10 @@ build-event-to-state-causality:
   tags:
     - linux-docker-runner
   services:
-    - docker:20.10.16-dind
+    - docker:27.0.2-dind
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --platform linux/amd64,linux/arm64 --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core/event-to-state-causality
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --platform linux/amd64,linux/arm64 --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core/event-to-state-causality
     - docker push $CI_REGISTRY/sense/sense-core/event-to-state-causality
   only:
     - main
