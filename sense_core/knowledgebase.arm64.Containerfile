@@ -10,7 +10,9 @@ ENV GDB_JAVA_OPTS "-Xmx3g -Xms3g \
         -Dgraphdb.append.request.id.headers=true \
         -Dreuse.vars.in.subselects=true"
 
-RUN apk add --no-cache python3 py3-pip iptables
+# Use apt-get for installing packages as it is based on ubuntu
+RUN apt-get update
+RUN apt-get install -y python3 python3-pip iptables
 
 # use a python script that, when the container starts, creates the repository, imports SENSE.ttl, and then imports the system data
 COPY ./knowledgebase/data_importer.py /opt/knowledgebase/data_importer.py
