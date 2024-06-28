@@ -37,8 +37,8 @@ build-knowledgebase:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:latest --platform linux/amd64 --file ./sense_core/knowledgebase.amd64.Containerfile ./sense_core
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:latest --platform linux/arm64 --file ./sense_core/knowledgebase.arm64.Containerfile ./sense_core
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:latest --platform linux/amd64 --file ./sense_core/knowledgebase.amd64.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:latest --platform linux/arm64 --file ./sense_core/knowledgebase.arm64.Containerfile ./sense_core --push
     - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase:latest $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:latest $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:latest
   only:
     - main
