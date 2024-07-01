@@ -38,6 +38,20 @@ The structure and interdependencies of the SENSE Core components are as follows:
 - **Component 2**: Description of component 2.
 - **Component 3**: Description of component 3.
 
+## System Requirements
+The system requirements below were obtained by running the [Demo Instantiation](https://git.ai.wu.ac.at/sense/seehub) (TODO: Replace this link, which directs to our internal seehub demo use case, to the public BIFROST Demo instantiation). Commands used: ```docker stats``` and ```docker ps -s``` (virtual size = read-only image data used by the container plus the container's writable layer)
+
+| Module | Container Size (MB) | Min System Memory Requirement (MB)
+| -------- | ------- | ------- |
+| simple-event-detection | 84 | 34 |
+| data-and-event-broker | 14 | 2 |
+| knowledgebase | 772 | 1623 |
+| data-ingestion | 92 | 43 |
+| semantic-event-log-bridge | 80 | 26 |
+| event-to-state-causality | 440 | 36 |
+| explanation-generation | ? | ? |
+| influxdb | 369 | 328 |
+
 ## Instantiation and Execution
 As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". You can also use our [Demo Instantiation](https://git.ai.wu.ac.at/sense/seehub) (TODO: Replace this link, which directs to our internal seehub demo use case, to the public BIFROST Demo instantiation) of the SENSE Core to quickly start with a running demo application.
 
