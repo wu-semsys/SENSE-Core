@@ -38,16 +38,26 @@ Ensure that the MQTT broker and GraphDB are running and accessible.
 
 ## Configuration
 
-The configuration for the application is defined in the Config class:
+The configuration for the application is defined in a JSON file:
 
-```java
-final String BROKER_PORT = "1883";
-final String BROKER_HOST = "mosquitto";
-final String REPOSITORY_URL = "http://knowledgebase:7200/";
-final String REPOSITORY_NAME = "seehub";
+```json
+{
+    "mqtt": {
+        "host": "mosquitto",
+        "port": 1883,
+        "clientId": "event-to-state-causality"
+    },
+    "semantic-model": {
+        "host": "knowledgebase",
+        "port": 7200,
+        "repository": "seehub",
+        "event-graph": "http://w3id.org/explainability/graph/seehub_dynamic"
+    }
+}
+
 ```
 
-Ensure that the MQTT broker and GraphDB repository URLs are correctly set.
+Ensure that the MQTT broker and GraphDB repository, host, and port are correctly set.
 
 ## Code Structure
 
