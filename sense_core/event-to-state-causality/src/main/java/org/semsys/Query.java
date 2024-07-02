@@ -5,7 +5,7 @@ public class Query {
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "\n" +
             "INSERT {\n" +
-            "    GRAPH <http://w3id.org/explainability/sense/States> {\n" +
+            "    GRAPH <namedGraphURI> {\n" +
             "        ?eventSensor sosa:madeObservation sosa:startedStateType_observation_eventURI .\n" +
             "        sosa:startedStateType_observation_eventURI sosa:hasResult s:startedStateType_eventURI ; # define st\n" +
             "        sosa:usedProcedure s:EventToStateConversion ;\n" +
@@ -31,7 +31,7 @@ public class Query {
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "\n" +
             "INSERT {\n" +
-            "    GRAPH <http://w3id.org/explainability/sense/States> {\n" +
+            "    GRAPH <namedGraphURI> {\n" +
             "        ?endedState s:hasEndEvent ?event .\n" +
             "    }\n" +
             "}\n" +
@@ -69,7 +69,7 @@ public class Query {
             "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "insert{\n" +
-            "    GRAPH <http://example.org/ActualStateCausality> {\n" +
+            "    GRAPH <namedGraphURI> {\n" +
             "        ?causeState ?causalityType ?effectState . # is this allowed? ?causalRelation\n" +
             "       \n" +
             "   }\n" +
@@ -88,12 +88,12 @@ public class Query {
             "    OPTIONAL {\n" +
             "        ?effectObservation1 sosa:hasResult ?endEvent .\n" +
             "        ?endEvent a s:Event .\n" +
-            "        ?effectObservation1 sosa:phenomenonTime ?endTime .\n" +
+            "        ?effectObservation1 sosa:phenomenonTime ?effectEnd .\n" +
             "    }\n" +
             "    OPTIONAL {\n" +
             "        ?effectObservation2 sosa:hasResult ?startEvent .\n" +
             "        ?startEvent a s:Event .\n" +
-            "        ?effectObservation2 sosa:phenomenonTime ?startTime .\n" +
+            "        ?effectObservation2 sosa:phenomenonTime ?effectStart .\n" +
             "    }\n" +
             "    \n" +
             "    # cause State\n" +
@@ -129,13 +129,13 @@ public class Query {
             "    }\n" +
             "\n" +
             "    BIND(\n" +
-            "        IF(?platformRequirement = \"samePlatform\", ?causePlatform = ?effectPlatform, \n" +
-            "        IF(?platformRequirement = \"parentPlatform\", ?causeParentPlatform = ?effectPlatform, \n" +
-            "        IF(?platformRequirement = \"siblingPlatform\", ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
+            "        IF(?platformRequirement = s:samePlatform, ?causePlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = s:parentPlatform, ?causeParentPlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = s:siblingPlatform, ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
             "    )\n" +
             "    BIND(\n" +
-            "        IF(?temporalRelation = \"overlaps\", ?causeTime <= ?effectTime && ?effectTime <= ?causeTime, \n" +
-            "        IF(?temporalRelation = \"before\", ?causeTime <= ?effectTime, true)) as ?temporal_filter\n" +
+            "        IF(?temporalRelation = s:overlaps, ?causeStart <= ?effectStart && ?effectStart <= ?causeEnd, \n" +
+            "        IF(?temporalRelation = s:before, ?causeStart <= ?effectStart, true)) as ?temporal_filter\n" +
             "    )\n" +
             "\n" +
             "    FILTER(?Platform_filter && ?temporal_filter) \n" +

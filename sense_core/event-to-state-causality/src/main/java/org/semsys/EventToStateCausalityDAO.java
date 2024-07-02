@@ -16,7 +16,7 @@ public class EventToStateCausalityDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(EventToStateCausalityDAO.class);
     private RepositoryManager manager;
     private Repository repository;
-    private Config config = new Config();
+    private Config config;
     private Query query = new Query();
     private String eventURI;
     private String eventSensor;
@@ -24,13 +24,14 @@ public class EventToStateCausalityDAO {
     private String observedProperty;
     private String event;
 
-    public EventToStateCausalityDAO(String eventURI) {
+    public EventToStateCausalityDAO(String eventURI, Config config) {
+        this.config = config;
         if (manager == null || repository == null) {
             LOGGER.trace("initialize connection to graphdb");
-            manager = new RemoteRepositoryManager(config.REPOSITORY_URL);
+            manager = new RemoteRepositoryManager("http://" + config.semanticModel.host + ":" + config.semanticModel.port);
             manager.init();
             LOGGER.trace("getting repository status from graphdb");
-            repository = manager.getRepository(config.REPOSITORY_NAME);
+            repository = manager.getRepository(config.semanticModel.repository);
 
         }
         this.eventURI = eventURI;
@@ -83,7 +84,9 @@ public class EventToStateCausalityDAO {
         LOGGER.trace("insertNewEndState({})", eventURI);
         RepositoryConnection connection = repository.getConnection();
         try {
-            String query = this.query.ADD_NEW_END_STATE.replaceAll("eventURI", eventURI);
+            String query = this.query.ADD_NEW_END_STATE
+                    .replaceAll("eventURI", eventURI)
+                    .replaceAll("namedGraphURI", config.semanticModel.namedGraph);
             Update update = connection.prepareUpdate(query);
             update.execute();
             LOGGER.info("Insert new end state query executed successfully.");
@@ -99,7 +102,8 @@ public class EventToStateCausalityDAO {
         String result = query.ADD_NEW_START_STATE
                 .replaceAll("eventURI2", eventURI)
                 .replaceAll("startedStateType", startedStateType.split("#")[1])
-                .replaceAll("eventURI", uuid.toString());
+                .replaceAll("eventURI", uuid.toString())
+                .replaceAll("namedGraphURI", config.semanticModel.namedGraph);
         return result;
     }
 
@@ -107,7 +111,7 @@ public class EventToStateCausalityDAO {
         LOGGER.trace("insertCausality({})", eventURI);
         RepositoryConnection connection = repository.getConnection();
         try {
-            String query = this.query.ADD_CAUSALITY;
+            String query = this.query.ADD_CAUSALITY.replaceAll("namedGraphURI", config.semanticModel.namedGraph);
             Update update = connection.prepareUpdate(query);
             update.execute();
             LOGGER.info("Insert causality query executed successfully.");
