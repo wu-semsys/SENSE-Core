@@ -51,7 +51,7 @@ The configuration for the application is defined in a JSON file:
         "host": "knowledgebase",
         "port": 7200,
         "repository": "seehub",
-        "event-graph": "http://w3id.org/explainability/graph/seehub_dynamic"
+        "namedGraph": "http://w3id.org/explainability/graph/seehub_dynamic"
     }
 }
 
