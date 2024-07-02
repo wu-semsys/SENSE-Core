@@ -9,18 +9,20 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+
 public class EventBroker {
     private Config config;
     private MqttClient client;
     private static final Logger LOGGER = LoggerFactory.getLogger(EventBroker.class);
 
-    public EventBroker() {
-        config = new Config();
+    public EventBroker(String configFilePath) throws IOException {
+        config = Config.load(configFilePath);
     }
 
     void connect() throws MqttException {
         LOGGER.info("Connecting to MQTT Broker");
-        client = new MqttClient("tcp://" + config.BROKER_HOST + ":" + config.BROKER_PORT, "event-to-state");
+        client = new MqttClient("tcp://" + config.mqtt.host + ":" + config.mqtt.port, config.mqtt.clientId);
         MqttConnectOptions options = new MqttConnectOptions();
         options.setCleanSession(true);
         client.connect(options);
@@ -34,7 +36,7 @@ public class EventBroker {
             public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
                 String message = new String(mqttMessage.getPayload());
                 LOGGER.info("Message Arrived. Topic: {}, Message: {}", s, message);
-                EventToStateCausalityDAO eventToStateCausalityDAO = new EventToStateCausalityDAO(message);
+                EventToStateCausalityDAO eventToStateCausalityDAO = new EventToStateCausalityDAO(message, config);
                 eventToStateCausalityDAO.insertStartState();
                 eventToStateCausalityDAO.insertNewEndState();
                 eventToStateCausalityDAO.insertCausality();
