@@ -3,11 +3,16 @@ import datetime
 import logging
 import time
 from typing import List
-from data_ingestion.configuration import DataIngestionConfiguration, DataIngestionTimeConfiguration, load_configuration
+from data_ingestion.configuration import (
+    DataIngestionConfiguration,
+    DataIngestionTimeConfiguration,
+    LiveDataIngestionTimeConfiguration,
+    load_configuration,
+)
 from data_ingestion.data_source import DataSource
 from data_ingestion.event_broker import create_mqtt_event_broker
 from data_ingestion.knowledge import DataIngestionKnowledgeRepository
-from data_ingestion.time import FakeClock
+from data_ingestion.time import Clock, FakeClock, RealClock
 from shared.configuration import GraphDbConfiguration, InfluxDBConfiguration
 from shared.graphdb_utils import wait_for_graphdb
 from shared.model import Event, SensorEvent
@@ -20,14 +25,20 @@ def find_all_points(config: GraphDbConfiguration, influxDbConfig: InfluxDBConfig
 
 
 def should_stop(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
+    if isinstance(time_config, LiveDataIngestionTimeConfiguration):
+        return False
     return time_config.stop_at < now and time_config.stop_action == "stop"
 
 
 def should_repeat(time_config: DataIngestionTimeConfiguration, now: datetime.datetime) -> bool:
+    if isinstance(time_config, LiveDataIngestionTimeConfiguration):
+        return False
     return time_config.stop_at < now and time_config.stop_action == "repeat"
 
 
-def create_clock(time_config: DataIngestionTimeConfiguration) -> FakeClock:
+def create_clock(time_config: DataIngestionTimeConfiguration) -> Clock:
+    if isinstance(time_config, LiveDataIngestionTimeConfiguration):
+        return RealClock()
     return FakeClock(time_config.start_at, time_config.delta_in_seconds)
 
 
@@ -51,6 +62,8 @@ def run_service(config: DataIngestionConfiguration) -> None:
     event_broker = create_mqtt_event_broker(config.mqtt)
     clock = create_clock(config.time)
     last_import = clock.now()
+
+    time.sleep(config.time.sleep_in_seconds)
     clock.tick()
 
     logging.info(f"Starting importing ...")
@@ -77,9 +90,9 @@ def run_service(config: DataIngestionConfiguration) -> None:
                 logging.debug(f"Found {len(point_values)} values for {data_source.uri()}")
                 for timestamp, value in point_values:
                     event_broker.publish(SensorEvent(data_source.uri(), timestamp, value))
-
             last_import = now
-            clock.tick()
+
             time.sleep(config.time.sleep_in_seconds)
+            clock.tick()
 
     logging.info("Shutting down Data Ingestion ...")
