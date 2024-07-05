@@ -1,0 +1,7 @@
+{
+    "semantic-model": {
+        "host": "knowledgebase",
+        "port": 7200,
+        "repository": "seehub"
+    }
+}
