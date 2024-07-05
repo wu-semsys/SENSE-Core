@@ -32,11 +32,12 @@ def get_explanations():
         logger.info(f"Explanations results = {results}")
         
         return jsonify({
-            "state_to_explain": state_to_explain,
+            "stateToExplain": state_to_explain,
             "explanations": results,
         })
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0')
+    config = load_config("config.json")
+    app.run(debug=True, host='0.0.0.0', port=config["explanation-engine"]["port"])

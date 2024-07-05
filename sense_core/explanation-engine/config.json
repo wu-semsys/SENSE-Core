@@ -3,5 +3,8 @@
         "host": "knowledgebase",
         "port": 7200,
         "repository": "seehub"
-    }
+    },
+	"explanation-engine": {
+		"port": 5001
+	}
 }

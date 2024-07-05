@@ -6,6 +6,4 @@ RUN pip3 install -r /opt/explanation-engine/requirements.txt
 
 WORKDIR /opt/explanation-engine
 
-EXPOSE 5000
-
 ENTRYPOINT [ "python3", "main.py"]
