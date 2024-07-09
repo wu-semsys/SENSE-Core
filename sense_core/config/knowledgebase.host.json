@@ -2,16 +2,19 @@
     "graph-database": {
         "user": "username",
         "password": "password",
-        "repo-url": "http://localhost:7200/repositories/sense/",
+        "repo-name": "sense",
+        "repo-url": "http://localhost:7200/repositories/sense",
         "repo-mgmt-api-url": "http://localhost:7200/rest/repositories",
-        "repo-config-file": "./graphdb-repo-config.ttl"
+        "repo-config-file": "./graphdb-repo-config.ttl",
+        "repo-recreate": false
     },
     "named-graphs": [
         {
             "uri": "http://w3id.org/explainability/graph/ontology",
             "ttl_files": [
                 "./data/SENSE.ttl"
-            ]
+            ],
+            "reupload": true
         }
     ]
 }
