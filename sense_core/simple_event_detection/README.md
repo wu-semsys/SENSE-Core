@@ -47,6 +47,18 @@ This section configures the connection to the GraphDB instance that hosts the se
 }
 ```
 
+## Viewing Events
+
+Events can be viewed in the GraphDB frontend by visitng `http://localhost:7200`.
+You can use the following SPARQL-Query for a list of detected events.
+
+```sparql
+PREFIX s: <http://w3id.org/explainability/sense#>
+select ?event where { 
+    ?event a s:Event .
+}
+```
+
 ## References
 
 [1] Maler, Oded, and Dejan Nickovic. “Monitoring Temporal Properties of Continuous Signals.” In Formal Techniques, Modelling and Analysis of Timed and Fault-Tolerant Systems, edited by Yassine Lakhnech and Sergio Yovine, 152–66. Berlin, Heidelberg: Springer, 2004. https://doi.org/10.1007/978-3-540-30206-3_12.
