@@ -112,7 +112,7 @@ You can find templates for the various files in the following locations:
 - **infrastructure/knowledgebase/graphdb_repo_config.ttl:** [Template for graphdb-repo-config.ttl](templates/graphdb_repo_config.ttl)
 - **infrastructure/knowledgebase/reasoning/event-reasoning.ttl:** [Template for event-reasoning.ttl](templates/event-reasoning.ttl)
 
-### Generate system-data.ttl 
+### 2. Generate system-data.ttl 
 ```
 cd infrastructure/knowledgebase
 
@@ -123,15 +123,18 @@ pip install pandas pyshacl rdflib
 python3 XLSXtoTTL.py "http://example.org/USE_CASE_NAME#" USE_CASE_NAME_SystemData.xlsx ./data/system-data.ttl --shacl-path ./reasoning/event-reasoning.ttl
 ```
 
-### Build the Docker Images
+### 3. Optional: Build the Docker Images
 We provide pre-built images via [registry.ai.wu.ac.at](registry.ai.wu.ac.at). However, if you would rather build the images locally, you can use the Dockerfiles/Containerfiles provided in the sense_core folder.
 
-### Run the Application
+### 4. Run the Application
 ```
 docker compose up
 ```
 
-### Request Explanations
+### 5. Request Events and Explanations
+
+Refer to [sense_core/simple_event_detection/README.md](sense_core/simple_event_detection/README.md) for instructions on how to retrieve a list of events from your SENSE system instantiation.
+
 Refer to [sense_core/explanation-engine/README.md](sense_core/explanation-engine/README.md) for instructions on how to retrieve explanations for events from your SENSE system instantiation. 
 
 ## Structure of the Repository
