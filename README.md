@@ -21,8 +21,7 @@ This repository primaraliy contains the source code of all SENSE Core modules, a
 ## TODOs
 
 - [ ] License?
-- [ ] Relevant References
-- [ ] Repository for a demo instantiation
+- [ ] Replace the links to the Demo Use Case and the Use Case Template repositories when they are published to GitHub
 
 ## SENSE Core Structure
 
@@ -42,7 +41,7 @@ InfluxDB time-series database, as this often available in existing CPSs. The mod
 - **explanation-generation:** This module contains a Python-based application that provides explanations for specific states identified from a semantic model. The application connects to a SPARQL endpoint to fetch causal relationships and returns them as JSON responses via a Flask-based API. [Further Information](sense_core/explanation-engine/README.md)
 
 ## System Requirements
-The system requirements below were obtained by running the [Demo Instantiation](https://git.ai.wu.ac.at/sense/seehub) (TODO: Replace this link, which directs to our internal seehub demo use case, to the public BIFROST Demo instantiation) via the following commands:
+The system requirements below were obtained by running the [Demo Use Case](https://git.ai.wu.ac.at/sense/seehub) via the following commands:
  
 ```
 docker ps -s # virtual size = read-only image data used by the container plus the container's writable layer
@@ -67,75 +66,14 @@ docker stats
 | TOTAL | 2002 MB | 2144 MB |
 
 ## Instantiation and Execution
-As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". You can also use our [Demo Instantiation](https://git.ai.wu.ac.at/sense/seehub) (TODO: Replace this link, which directs to our internal seehub demo use case, to the public BIFROST Demo instantiation) of the SENSE Core to quickly start with a running demo application.
+As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". We provide two possible approaches: [(1)](#use-the-demo-use-case) starting with an executeable demo use case and [(2)](#use-the-use-case-template) starting with a use case template.
 
-If you want to instantiate a new SENSE system from the ground up, you need to follow the steps listed below. Note that, on several occasions, it is necessary to define a name for the use case. We use USE_CASE_NAME as a placeholder, which you need to replace with the actual use case name.
+### Use the Demo Use Case
+You can use our [Demo Use Case](https://git.ai.wu.ac.at/sense/seehub) of the SENSE Core to quickly start with a running demo application. Instructions on about how to get it up and running are provided in the README of the Demo Use Case repository.
 
-### 0. Prepare the Use-Case-Specific Information
-Follow our [Guide]() (TODO: add link to the guide on the necessary steps for analyzing the data, identifying relevant events, and defining appropriate explanations). During this step, the use-case-specific information will be collected and used to populate the SystemData.xlsx template. 
+### Use the Use Case Template
+We also provide this [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository as a starting point for creating a new SENSE instance. Instructions on about how to get it up and running are provided in the README of the Use Case Template repository. 
 
-
-### 1. **Create a Use-Case-Specific Directory / GIT Repository**
-We assume using a GIT repository to manage the use-case-specific instantiation of the SENSE Core. We suggest the following file structure.
-```
-├── sense-core
-|   ├── ...
-├── USE_CASE_NAME
-    ├── README.md # (optional)
-    ├── compose.yml # (docker compose file)
-    ├── config # (configuration files for all modules)
-    │   ├── data_ingestion.docker.json
-    │   ├── event_to_state_causality.docker.json
-    │   ├── explanation_engine.docker.json
-    │   ├── knowledgebase.docker.json
-    │   ├── semantic_event_log_bridge.docker.json
-    │   └── simple_event_detection.docker.json
-    └── infrastructure # (additional module-specific configuration and data files)
-        ├── knowledgebase
-        │   ├── USE_CASE_NAME_SystemData.xlsx
-        ├── XLSXtoTTL.py
-        ├── data
-        │   ├── SENSE.ttl
-        │   └── system-data.ttl
-        ├── graphdb_repo_config.ttl
-        └── reasoning
-            └── event-reasoning.ttl
-```
-
-You can find templates for the various files in the following locations:
-- **compose.yml:** Refer to the README.md files of the indiviudal modules
-- **config/*:** Refer to the README.md files of the indiviudal modules
-- **infrastructure/knowledgebase/USE_CASE_NAME_SystemData.xlsx:** [Template for USE_CASE_NAME_SystemData.xlsx](templates/USE_CASE_NAME_SystemData.xlsx). This file has been created in the [previous step](#1-create-a-use-case-specific-directory--git-repository).
-- **infrastructure/knowledgebase/XLSXtoTTL.py:** TODO
-- **infrastructure/knowledgebase/data/SENSE.ttl:** Copy from [SENSE.ttl](sense_core/knowledgebase/data/SENSE.ttl)
-- **infrastructure/knowledgebase/data/system-data.ttl:** This file will be created in the [next step](#generate-system-datattl) from SystemData.xlsx via the XLSXtoTTL.py script
-- **infrastructure/knowledgebase/graphdb_repo_config.ttl:** [Template for graphdb-repo-config.ttl](templates/graphdb_repo_config.ttl)
-- **infrastructure/knowledgebase/reasoning/event-reasoning.ttl:** [Template for event-reasoning.ttl](templates/event-reasoning.ttl)
-
-### 2. Generate system-data.ttl 
-```
-cd infrastructure/knowledgebase
-
-# install required python packages
-pip install pandas pyshacl rdflib
-
-# create system-data.ttl from SystemData.xlsx
-python3 XLSXtoTTL.py "http://example.org/USE_CASE_NAME#" USE_CASE_NAME_SystemData.xlsx ./data/system-data.ttl --shacl-path ./reasoning/event-reasoning.ttl
-```
-
-### 3. Optional: Build the Docker Images
-We provide pre-built images via [registry.ai.wu.ac.at](registry.ai.wu.ac.at). However, if you would rather build the images locally, you can use the Dockerfiles/Containerfiles provided in the sense_core folder.
-
-### 4. Run the Application
-```
-docker compose up
-```
-
-### 5. Request Events and Explanations
-
-Refer to [sense_core/simple_event_detection/README.md](sense_core/simple_event_detection/README.md) for instructions on how to retrieve a list of events from your SENSE system instantiation.
-
-Refer to [sense_core/explanation-engine/README.md](sense_core/explanation-engine/README.md) for instructions on how to retrieve explanations for events from your SENSE system instantiation. 
 
 ## Structure of the Repository
 ```
@@ -177,7 +115,7 @@ Currently, we use configuration files that are specific to each module, e.g., th
 Configuration files with the file ending `host.json` are intended to be used for development only. As an example, if you want to work on the data_ingestion module, you can start all other modules within their corresponding containers and execute the data_ingestion script with its corresponding data_ingestion.host.json on your host machine.
 
 ### Configuration Files for Operation
-Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instantiations. Eventually, we might provide templates or example `docker.json` configuration files also with the SENSE Core repository.
+Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instantiations. However, we provide templates for `docker.json` configuration files also via the [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository.
 
 ## GitLAB CI/CD
 CI/CD build instructions for each image are defined in .gitlab-ci.yml.
