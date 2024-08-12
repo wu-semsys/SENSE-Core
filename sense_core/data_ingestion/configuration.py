@@ -42,7 +42,7 @@ class DataIngestionConfiguration:
         self.mqtt = MqttConfiguration(config["mqtt"])
         self.influxDB = InfluxDBConfiguration(config["influxdb"])
         self.semantic_model = GraphDbConfiguration(config["semantic-model"])
-        self.time = load_time_configuration(config["time"])
+        self.time = load_time_configuration(config["data-ingestion"])
 
 
 def load_configuration(path: str) -> DataIngestionConfiguration:
