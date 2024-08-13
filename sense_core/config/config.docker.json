@@ -17,43 +17,43 @@
 		"host": "influxdb",
 		"port": 8086,
 		"protocol": "http",
-        "bucket": "use_case_name",
-        "org": "use_case_name",
-        "token": "secretadmintoken"
+		"bucket": "use_case_name",
+		"org": "use_case_name",
+		"token": "secretadmintoken"
 	},
 	"data-ingestion": {
 		"mode": "replay",
 		"startAt": "2023-04-01T00:00:00",
-        "stopAt": "2023-04-30T23:59:00",
+		"stopAt": "2023-04-30T23:59:00",
 		"stopAction": "repeat",
 		"deltaInSeconds": 600,
 		"sleepInSeconds": 2
 	},
 	"graph-database": {
-        "user": "username",
-        "password": "password",
-        "repo-name": "use_case_name",
-        "repo-url": "http://127.0.0.1:7200/repositories/use_case_name",
-        "repo-mgmt-api-url": "http://127.0.0.1:7200/rest/repositories",
-        "repo-config-file": "./graphdb_repo_config.ttl",
-        "repo-recreate": false
-    },
-    "named-graphs": [
-        {
-            "uri": "http://w3id.org/explainability/graph/ontology",
-            "ttl_files": [
-                "./data/SENSE.ttl"
-            ],
-            "reupload": false
-        },
-        {
-            "uri": "http://w3id.org/explainability/graph/use_case_name_static",
-            "ttl_files": [
-                "./data/system-data.ttl"
-            ],
-            "reupload": false
-        }
-    ],
+		"user": "username",
+		"password": "password",
+		"repo-name": "use_case_name",
+		"repo-url": "http://127.0.0.1:7200/repositories/use_case_name",
+		"repo-mgmt-api-url": "http://127.0.0.1:7200/rest/repositories",
+		"repo-config-file": "./graphdb_repo_config.ttl",
+		"repo-recreate": false
+	},
+	"named-graphs": [
+		{
+			"uri": "http://w3id.org/explainability/graph/ontology",
+			"ttl_files": [
+				"./data/SENSE.ttl"
+			],
+			"reupload": false
+		},
+		{
+			"uri": "http://w3id.org/explainability/graph/use_case_name_static",
+			"ttl_files": [
+				"./data/system-data.ttl"
+			],
+			"reupload": false
+		}
+	],
 	"explanation-engine": {
 		"port": 5001
 	}

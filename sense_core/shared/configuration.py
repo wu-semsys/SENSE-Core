@@ -12,7 +12,7 @@ class MqttConfiguration:
 
     def __str__(self) -> str:
         return f"Host: {self.host}, Port: {self.port}, Semantic Event Log ID: {self.semantic_event_log_id}, Simple Event Detection ID: {self.simple_event_detection_id}, "
-        f"Data Ingestion ID: {self.data_ingestion_id}, Event to State Causality ID: {self.event_to_state_causality_id}"
+                f"Data Ingestion ID: {self.data_ingestion_id}, Event to State Causality ID: {self.event_to_state_causality_id}"
 
 
 class GraphDbConfiguration:
