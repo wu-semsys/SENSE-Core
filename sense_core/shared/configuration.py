@@ -15,7 +15,6 @@ class MqttConfiguration:
                 f"Simple Event Detection ID: {self.simple_event_detection_id}, Data Ingestion ID: {self.data_ingestion_id}, "
                 f"Event to State Causality ID: {self.event_to_state_causality_id}")
 
-
 class GraphDbConfiguration:
     def __init__(self, config: dict) -> None:
         self.host = config["host"]

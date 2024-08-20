@@ -14,11 +14,11 @@ public class Config {
     @JsonProperty("semantic-model")
     public SemanticModelConfig semanticModel;
 		
-	@JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MQTTConfig {
         public String host;
         public int port;
-		@JsonProperty("event-to-state-causality-id")
+        @JsonProperty("event-to-state-causality-id")
         public String clientId;
     }
 
@@ -26,7 +26,7 @@ public class Config {
         public String host;
         public int port;
         public String repository;
-		@JsonProperty("named-graph")
+        @JsonProperty("named-graph")
         public String namedGraph;
     }
 
