@@ -6,4 +6,4 @@ RUN pip3 install -r /opt/semantic-event-log_bridge/requirements.txt
 
 WORKDIR /opt/semantic-event-log_bridge
 
-ENTRYPOINT [ "python3", "semantic_event_log_bridge.py", "-c", "config/semantic_event_log_bridge.docker.json" ]cat
+ENTRYPOINT [ "python3", "semantic_event_log_bridge.py", "-c", "config/semantic_event_log_bridge.docker.json" ]
