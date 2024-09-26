@@ -19,14 +19,14 @@ def extract_has_result(graph: Graph):
 
 @retry(wait=wait_fixed(2), stop=stop_after_attempt(10))
 def connect_to_mqtt_broker(config: MqttConfiguration) -> mqtt.Client:
-    client = mqtt.Client(config.client_id)
+    client = mqtt.Client(config.semantic_event_log_id)
     client.connect(config.host, config.port)
     return client
 
 
 def delete_events_graph(config: GraphDbConfiguration):
     logging.debug(f"Deleting 'Events' graph...")
-    params = {"graph": config.event_graph}
+    params = {"graph": config.named_graph}
     response = requests.delete(
         f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/service", params=params
     )
@@ -36,7 +36,7 @@ def delete_events_graph(config: GraphDbConfiguration):
 
 def insert_graph(config: GraphDbConfiguration, graph: Graph):
     logging.debug(f"Inserting graph into GraphDB...")
-    params = {"graph": config.event_graph}
+    params = {"graph": config.named_graph}
     response = requests.post(
         f"http://{config.host}:{config.port}/repositories/{config.repository}/rdf-graphs/service",
         params=params,

@@ -2,7 +2,7 @@
     "mqtt": {
         "host": "localhost",
         "port": 1883,
-        "clientId": "monitoring-service"
+        "simple-event-detection-id": "monitoring-service"
     },
     "semantic-model": {
         "host": "localhost",

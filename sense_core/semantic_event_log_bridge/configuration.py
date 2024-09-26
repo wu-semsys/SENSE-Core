@@ -1,25 +1,14 @@
 import json
-
-
-class MqttConfiguration:
-    def __init__(self, config: dict) -> None:
-        self.host = config["host"]
-        self.port = config["port"]
-        self.client_id = config["clientId"]
-
-
-class GraphDbConfiguration:
-    def __init__(self, config: dict) -> None:
-        self.host = config["host"]
-        self.port = config["port"]
-        self.repository = config["repository"]
-        self.event_graph = config["event-graph"]
-
+from shared.configuration import MqttConfiguration, GraphDbConfiguration
 
 class Configuration:
     def __init__(self, config: dict) -> None:
         self.mqtt = MqttConfiguration(config["mqtt"])
-        self.event_log = GraphDbConfiguration(config["event_log"])
+        self.event_log = GraphDbConfiguration(config["semantic-model"])
+        
+    def __str__(self) -> str:
+        return (f"MQTT Configuration: {self.mqtt}\n"
+                f"GraphDB Configuration: {self.event_log}\n")
 
 
 def load_configuration(path: str) -> Configuration:
