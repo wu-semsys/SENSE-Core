@@ -5,37 +5,37 @@ from shared.model import (
     DetectedEvent,
     EventDetectionProcedure,
 )
-from simple_event_detection.monitors import Monitor, WindowBasedMonitor
+from simple_event_detection.monitors import WindowBasedMonitor
 from simple_event_detection.monitors.time_series import TimeSeries
 from simple_event_detection.monitors.utils import get_required_literal_parameter
 
 
-class FallTimeMonitor(WindowBasedMonitor):
+class StableTimeMonitor(WindowBasedMonitor):
     """
-    This class is able to monitor a fall time event ("rapidly" decreasing signal).
+    This class is able to monitor a stable time event ("stable" signal).
 
     method: "CustomMonitor"
-    definition: "FallTimeMonitor"
+    definition: "StableTimeMonitor"
     parameters
         - value: binds to the value of the monitored signal.
-        - delta: How far the signal must fall, such that an event is triggered.
-        - fall_time: What is the maximum period within which a difference of delta must be observed [s].
+        - maximum_delta: Largest offset that is still considered stable within a stable_time frame.
+        - stable_time: Within which period a difference should be observed [s].
     """
 
     def __init__(self, procedure: EventDetectionProcedure, event_broker: EventBroker) -> None:
-        delta = get_required_literal_parameter(procedure, "delta")
-        fall_time = get_required_literal_parameter(procedure, "fall_time")
+        maximum_delta = get_required_literal_parameter(procedure, "maximum_delta")
+        stable_time = get_required_literal_parameter(procedure, "stable_time")
 
-        super().__init__(procedure, event_broker, fall_time)
-        self.delta = delta
-        self.fall_time = fall_time
+        super().__init__(procedure, event_broker, stable_time)
+        self.maximum_delta = maximum_delta
+        self.stable_time = stable_time
         self.signal = TimeSeries()
         self.old_value = False
 
     def evaluate_window(self, window) -> List[DetectedEvent]:
         """
-        Checks whether two values in a sliding window (size fall_time) have a difference of more than
-        delta. If this is the case we emit an event.
+        Checks whether no values in a sliding window (size stable_time) have a difference of more than
+        maximum_delta. If this is the case we emit an event.
 
         Note that currently we do not interpolate the signals or look beyond the window.
         """
@@ -47,19 +47,20 @@ class FallTimeMonitor(WindowBasedMonitor):
         has_significant_diff = False
         for j, (_, value1) in enumerate(window):
             for _, value2 in window[j + 1 :]:
-                if value1 - value2 >= self.delta:
+                if value2 - value1 >= self.maximum_delta:
                     has_significant_diff = True
                     break
             if has_significant_diff:
                 break
 
-        if has_significant_diff and not self.old_value:
+        is_stable = not has_significant_diff
+        if is_stable and not self.old_value:
             (timestamp_int, _) = window[0]
             timestamp = datetime.datetime.fromtimestamp(timestamp_int, datetime.timezone.utc)
-            event = DetectedEvent(self.procedure.sensor_uri, timestamp, has_significant_diff, self.procedure)
+            event = DetectedEvent(self.procedure.sensor_uri, timestamp, is_stable, self.procedure)
             events.append(event)
 
-        self.old_value = has_significant_diff
+        self.old_value = is_stable
 
         return events
 

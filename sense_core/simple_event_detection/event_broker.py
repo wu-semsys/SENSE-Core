@@ -90,7 +90,7 @@ class MqttEventBroker:
         graph.add((event_uri, RDF["type"], SENSE["Event"]))
         graph.add((event_uri, SENSE["hasEventType"], event.procedure.event_type_uri))
 
-        logging.info(f"Event Detected: {str(event_uri)}")
+        logging.info(f"Event Detected at {event.timestamp.isoformat()}: {str(event_uri)}")
 
         payload = graph.serialize(format="turtle")
         self.publish_client.publish("events/simple", payload)

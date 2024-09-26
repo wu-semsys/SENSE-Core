@@ -1,4 +1,6 @@
+from typing import List, Tuple
 from shared.model import (
+    DetectedEvent,
     EventDetectionProcedure,
     SensorEvent,
     SignalParameterBinding,
@@ -45,3 +47,33 @@ class Monitor:
 
     def reset_data(self) -> None:
         self.updates = dict()
+
+
+class WindowBasedMonitor(Monitor):
+    """
+    Base class for monitors that work on windows.
+    """
+
+    def __init__(self, procedure: EventDetectionProcedure, event_broker: EventBroker, window_size: int) -> None:
+        super().__init__(procedure, event_broker)
+        self.window_size = window_size
+
+    def evaluate_internal(self, updates) -> List[DetectedEvent]:
+        events = []
+
+        for timestamp, value in updates["signal"]:
+            self.signal.add_value(timestamp, value)
+
+        for i, (start_time, _) in enumerate(self.signal.values):
+            window_end_time = start_time + self.window_size
+            window = [(t, v) for t, v in self.signal.values[i:] if start_time <= t <= window_end_time]
+
+            events.extend(self.evaluate_window(window))
+
+        (last_timestamp, _) = self.signal.values[-1]
+        self.signal.clean_up(last_timestamp - self.window_size)
+
+        return events
+
+    def evaluate_window(self, window: List[Tuple[int, float]]):
+        raise NotImplementedError()

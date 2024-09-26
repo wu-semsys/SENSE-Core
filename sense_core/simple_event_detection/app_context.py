@@ -4,6 +4,8 @@ from typing import List
 from simple_event_detection.configuration import MonitoringConfiguration
 from simple_event_detection.knowledge import MonitoringKnowledgeRepository
 from simple_event_detection.monitors.fall_time_monitor import FallTimeMonitor
+from simple_event_detection.monitors.rise_time_monitor import RiseTimeMonitor
+from simple_event_detection.monitors.stable_time_monitor import StableTimeMonitor
 from simple_event_detection.time import Clock, EventBasedClock
 from simple_event_detection.monitors.stl_monitor import STLMonitor
 from simple_event_detection.event_broker import MqttEventBroker
@@ -13,6 +15,12 @@ from shared.model import EventDetectionProcedure, SensorEvent
 def create_custom_monitor(sp: EventDetectionProcedure, broker: MqttEventBroker):
     if sp.definition == "FallTimeMonitor":
         return FallTimeMonitor(sp, broker)
+
+    if sp.definition == "RiseTimeMonitor":
+        return RiseTimeMonitor(sp, broker)
+
+    if sp.definition == "StableTimeMonitor":
+        return StableTimeMonitor(sp, broker)
 
     raise Exception("Unknown custom monitor ", sp.definition)
 
