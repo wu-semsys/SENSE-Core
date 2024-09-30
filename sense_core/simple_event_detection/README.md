@@ -37,7 +37,7 @@ This section configures the connection to the GraphDB instance that hosts the se
     "mqtt": {
         "host": "mosquitto",
         "port": 1883,
-        "clientId": "monitoring-service"
+        "simple-event-detection-id": "monitoring-service"
     },
     "semantic-model": {
         "host": "knowledgebase",

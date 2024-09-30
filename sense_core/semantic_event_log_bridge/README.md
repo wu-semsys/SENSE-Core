@@ -35,13 +35,13 @@ This section configures the connection to the GraphDB instance that hosts the se
     "mqtt": {
         "host": "mosquitto",
         "port": 1883,
-        "clientId": "semantic-event-log-bridge"
+        "semantic-event-log-id": "semantic-event-log-bridge"
     },
     "event_log": {
         "host": "knowledgebase",
         "port": 7200,
         "repository": "bifrost",
-        "event-graph": "http://w3id.org/explainability/graph/bifrost_dynamic"
+        "named-graph": "http://w3id.org/explainability/graph/bifrost_dynamic"
     }
 }
 

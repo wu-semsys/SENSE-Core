@@ -45,13 +45,13 @@ The configuration for the application is defined in a JSON file:
     "mqtt": {
         "host": "mosquitto",
         "port": 1883,
-        "clientId": "event-to-state-causality"
+        "event-to-state-causality-id": "event-to-state-causality"
     },
     "semantic-model": {
         "host": "knowledgebase",
         "port": 7200,
         "repository": "seehub",
-        "namedGraph": "http://w3id.org/explainability/graph/seehub_dynamic"
+        "named-graph": "http://w3id.org/explainability/graph/seehub_dynamic"
     }
 }
 

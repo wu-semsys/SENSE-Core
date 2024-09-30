@@ -69,7 +69,7 @@ An example for replaying data from historical data from an InfluxDB.
     "mqtt": {
         "host": "mosquitto",
         "port": 1883,
-        "clientId": "data-ingestion"
+        "data-ingestion-id": "data-ingestion"
     },
     "semantic-model": {
         "host": "knowledgebase",
@@ -84,7 +84,7 @@ An example for replaying data from historical data from an InfluxDB.
         "org": "seehub",
         "token": "secretadmintoken"
     },
-    "time": {
+    "data-ingestion": {
         "mode": "replay",
         "startAt": "2023-04-01T00:00:00",
         "stopAt": "2023-04-30T23:59:00",
@@ -100,7 +100,7 @@ An example for replaying live measurements to the event broker from an InfluxDB.
 ```json
 {
     // same as above
-    "time": {
+    "data-ingestion": {
         "mode": "live",
         "sleepInSeconds": "60"
     }
