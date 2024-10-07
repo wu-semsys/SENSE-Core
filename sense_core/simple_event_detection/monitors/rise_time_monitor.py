@@ -47,14 +47,14 @@ class RiseTimeMonitor(WindowBasedMonitor):
         has_significant_diff = False
         for j, (_, value1) in enumerate(window):
             for _, value2 in window[j + 1 :]:
-                if value2 - value1 >= self.delta:
+                if value2 - value1 > self.delta:
                     has_significant_diff = True
                     break
             if has_significant_diff:
                 break
 
         if has_significant_diff and not self.old_value:
-            (timestamp_int, _) = window[0]
+            (timestamp_int, _) = window[1]
             timestamp = datetime.datetime.fromtimestamp(timestamp_int, datetime.timezone.utc)
             event = DetectedEvent(self.procedure.sensor_uri, timestamp, has_significant_diff, self.procedure)
             events.append(event)
