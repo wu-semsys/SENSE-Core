@@ -120,7 +120,7 @@ public class Query {
             "    }\n" +
             "\n" +
             "    {\n" +
-            "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation WHERE { \n" +
+            "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation ?stc WHERE { \n" +
             "            ?stc a s:StateTypeCausality .\n" +
             "            ?stc s:cause ?causeStateType .    \n" +
             "            ?stc s:effect ?effectStateType .\n" +
