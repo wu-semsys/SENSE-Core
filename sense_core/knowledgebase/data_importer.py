@@ -3,6 +3,7 @@ import argparse
 import requests
 from requests.auth import HTTPBasicAuth
 from requests_toolbelt.multipart.encoder import MultipartEncoder
+import json
 
 from configuration import load_configuration
 
@@ -163,9 +164,32 @@ def upload_ttl_to_named_graph(graph_uri, ttl_file, config):
         print(response.status_code)
         print(response.text)
 
+def rename_repository(config):
+    if config.repo_name_final:
+        auth = HTTPBasicAuth(config.user, config.password)
+        # get the current repository configuration
+        response = requests.get(config.repo_mgmt_api_url, auth=auth)
+        # configurations of all repositories are returned from the graph db instance
+        repo_configurations = response.json() 
+        repo_configuration = {}
+        #select the configuration of the repository to be renamed 
+        for repo in repo_configurations:
+            if repo['id'] == config.repo_name:
+                repo_configuration = repo
+                break
+        # change the id of the repository configuration
+        repo_configuration['id'] = config.repo_name_final
+        headers = {
+            'Content-Type': 'application/json', 
+        }
+        # send the updated repository configuration to the repository management API
+        response = requests.put(config.repo_mgmt_api_url+'/'+config.repo_name, data=json.dumps(repo_configuration), headers=headers, auth=auth)
+
+
+
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser(prog="data_import")
-    arg_parser.add_argument("-c", "--config", required=True)
+    arg_parser.add_argument("-c", "--config",   required=True)
     args = arg_parser.parse_args()
 
     # the path to the repository configuration file is defined in the knowledgebase config
@@ -199,3 +223,5 @@ if __name__ == "__main__":
             for ttl_file in named_graph.ttl_files:
                 upload_ttl_to_named_graph(named_graph.uri, ttl_file, config)
         # check if reupload is set
+    #rename repository (only if final_repo_name is set)
+    rename_repository(config)
