@@ -70,7 +70,9 @@ public class Query {
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "insert{\n" +
             "    GRAPH <namedGraphURI> {\n" +
-            "        ?causeState ?causalityType ?effectState . # is this allowed? ?causalRelation\n" +
+            "        ?causeState s:causallyRelated ?effectState . \n" +
+            "        << ?causeState s:causallyRelated ?effectState >> sense:hasCausalSource ?stc .
+"
             "       \n" +
             "   }\n" +
             "}\n" +
