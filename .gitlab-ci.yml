@@ -43,6 +43,21 @@ build-knowledgebase:
   only:
     - main
 
+build-knowledgebase-noprio:
+  stage: build
+  tags:
+    - linux-docker-runner
+  services:
+    - docker:27.0.2-dind
+  script:
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker buildx create --use
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:latest --platform linux/amd64 --file ./sense_core/knowledgebase-noprio.amd64.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:latest --platform linux/arm64 --file ./sense_core/knowledgebase-noprio.arm64.Containerfile ./sense_core --push
+    - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio:latest $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:latest $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:latest
+  only:
+    - main
+
 build-semantic-event-log-bridge:
   stage: build
   tags:
