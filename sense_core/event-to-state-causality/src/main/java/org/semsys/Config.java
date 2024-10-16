@@ -2,6 +2,7 @@ package org.semsys;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
@@ -13,6 +14,9 @@ public class Config {
     public MQTTConfig mqtt;
     @JsonProperty("semantic-model")
     public SemanticModelConfig semanticModel;
+    @JsonProperty("chatbot-integration")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public ChatbotBridgeConfig chatbotBridge;
 		
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MQTTConfig {
@@ -28,6 +32,10 @@ public class Config {
         public String repository;
         @JsonProperty("named-graph")
         public String namedGraph;
+    }
+
+    public static class ChatbotBridgeConfig {
+        public String url;
     }
 
     public static Config load(String filePath) throws IOException {

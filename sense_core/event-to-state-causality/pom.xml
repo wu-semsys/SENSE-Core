@@ -41,6 +41,13 @@
             <artifactId>rdf4j-repository-manager</artifactId>
             <version>5.0.0-M2</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+        </dependency>
     </dependencies>
 
 	<build>
