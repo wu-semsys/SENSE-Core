@@ -22,7 +22,7 @@ public class EventToStateCausalityDAO {
     private String eventSensor;
     private String startedStateType;
     private String observedProperty;
-    private String event;
+    private String baseURI;
 
     public EventToStateCausalityDAO(String eventURI, Config config) {
         this.config = config;
@@ -35,7 +35,7 @@ public class EventToStateCausalityDAO {
 
         }
         this.eventURI = eventURI;
-        this.event = eventURI.split("_")[1];
+        this.baseURI = eventURI.split("#")[0] + "#";
     }
 
     public void insertStartState(){
@@ -103,7 +103,8 @@ public class EventToStateCausalityDAO {
                 .replaceAll("eventURI2", eventURI)
                 .replaceAll("startedStateType", startedStateType.split("#")[1])
                 .replaceAll("eventURI", uuid.toString())
-                .replaceAll("namedGraphURI", config.semanticModel.namedGraph);
+                .replaceAll("namedGraphURI", config.semanticModel.namedGraph)
+                .replaceAll("baseURI", this.baseURI);
         return result;
     }
 

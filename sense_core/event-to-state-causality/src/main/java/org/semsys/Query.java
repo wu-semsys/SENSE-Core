@@ -3,6 +3,7 @@ package org.semsys;
 public class Query {
     String ADD_NEW_START_STATE = "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "PREFIX base: <baseURI>\n" +
             "\n" +
             "INSERT {\n" +
             "    GRAPH <namedGraphURI> {\n" +
