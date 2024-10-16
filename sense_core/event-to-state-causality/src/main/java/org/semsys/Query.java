@@ -11,7 +11,7 @@ public class Query {
             "        sosa:startedStateType_observation_eventURI sosa:hasResult s:startedStateType_eventURI ; # define st\n" +
             "        sosa:usedProcedure s:EventToStateConversion ;\n" +
             "        sosa:observedProperty ?observedProperty .\n" +
-            "        s:startedStateType_eventURI a s:State ;\n" +
+            "        base:startedStateType_eventURI a s:State ;\n" +
             "                    s:hasStateType ?startedStateType ;\n" +
             "                    s:hasStartEvent <eventURI2> .\n" +
             "    }\n" +
