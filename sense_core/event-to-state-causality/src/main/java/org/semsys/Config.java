@@ -34,6 +34,7 @@ public class Config {
         public String namedGraph;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ChatbotBridgeConfig {
         public String url;
     }
