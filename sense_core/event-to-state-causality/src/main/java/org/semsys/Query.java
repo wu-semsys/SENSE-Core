@@ -46,8 +46,13 @@ public class Query {
             "    ?eventSensor sosa:madeObservation ?eventObservation .\n" +
             "    ?endedStateType s:hasEndEventType ?eventType .\n" +
             "    ?endedState s:hasStateType ?endedStateType .\n" +
+            "    ?endedState s:hasStartEvent ?startEvent .\n" +
+            "    ?startEventObservation sosa:hasResult ?startEvent ;\n" +
+            "        sosa:phenomenonTime ?startEventTime .\n" +
+            "    FILTER (?eventTime >= ?startEventTime)\n" +
             "    FILTER NOT EXISTS { ?endedState s:hasEndEvent ?endEvent . }\n" +
             "}\n";
+			
     String COLLECT_EVENT_DATA = "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "\n" +
