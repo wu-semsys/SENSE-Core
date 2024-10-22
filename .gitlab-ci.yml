@@ -11,7 +11,7 @@ build-data-ingestion:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/data-ingestion:latest --platform linux/amd64,linux/arm64 --file ./sense_core/data_ingestion.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/data-ingestion:ontology-v1 --platform linux/amd64,linux/arm64 --file ./sense_core/data_ingestion.Containerfile ./sense_core --push
   only:
     - main
 
@@ -24,7 +24,7 @@ build-simple-event-detection:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:latest --platform linux/amd64,linux/arm64 --file ./sense_core/simple_event_detection.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/simple-event-detection:ontology-v1 --platform linux/amd64,linux/arm64 --file ./sense_core/simple_event_detection.Containerfile ./sense_core --push
   only:
     - main
 
@@ -37,9 +37,9 @@ build-knowledgebase:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:latest --platform linux/amd64 --file ./sense_core/knowledgebase.amd64.Containerfile ./sense_core --push
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:latest --platform linux/arm64 --file ./sense_core/knowledgebase.arm64.Containerfile ./sense_core --push
-    - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase:latest $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:latest $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:latest
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:ontology-v1 --platform linux/amd64 --file ./sense_core/knowledgebase.amd64.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:ontology-v1 --platform linux/arm64 --file ./sense_core/knowledgebase.arm64.Containerfile ./sense_core --push
+    - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase:ontology-v1 $CI_REGISTRY/sense/sense-core/knowledgebase-amd64:ontology-v1 $CI_REGISTRY/sense/sense-core/knowledgebase-arm64:ontology-v1
   only:
     - main
 
@@ -52,9 +52,9 @@ build-knowledgebase-noprio:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:latest --platform linux/amd64 --file ./sense_core/knowledgebase-noprio.amd64.Containerfile ./sense_core --push
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:latest --platform linux/arm64 --file ./sense_core/knowledgebase-noprio.arm64.Containerfile ./sense_core --push
-    - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio:latest $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:latest $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:latest
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:ontology-v1 --platform linux/amd64 --file ./sense_core/knowledgebase-noprio.amd64.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:ontology-v1 --platform linux/arm64 --file ./sense_core/knowledgebase-noprio.arm64.Containerfile ./sense_core --push
+    - docker buildx imagetools create -t $CI_REGISTRY/sense/sense-core/knowledgebase-noprio:ontology-v1 $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-amd64:ontology-v1 $CI_REGISTRY/sense/sense-core/knowledgebase-noprio-arm64:ontology-v1
   only:
     - main
 
@@ -67,7 +67,7 @@ build-semantic-event-log-bridge:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge:latest --platform linux/amd64,linux/arm64 --file ./sense_core/semantic_event_log_bridge.Containerfile ./sense_core --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/semantic-event-log-bridge:ontology-v1 --platform linux/amd64,linux/arm64 --file ./sense_core/semantic_event_log_bridge.Containerfile ./sense_core --push
   only:
     - main
 
@@ -80,7 +80,7 @@ build-event-to-state-causality:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:latest --platform linux/amd64,linux/arm64 --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core/event-to-state-causality --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/event-to-state-causality:ontology-v1 --platform linux/amd64,linux/arm64 --file ./sense_core/event-to-state-causality/Dockerfile ./sense_core/event-to-state-causality --push
   only:
     - main
     
@@ -93,6 +93,6 @@ build-explanation-engine:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/explanation-engine:latest --platform linux/amd64,linux/arm64 --file ./sense_core/explanation-engine/Dockerfile ./sense_core/explanation-engine --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/explanation-engine:ontology-v1 --platform linux/amd64,linux/arm64 --file ./sense_core/explanation-engine/Dockerfile ./sense_core/explanation-engine --push
   only:
     - main
