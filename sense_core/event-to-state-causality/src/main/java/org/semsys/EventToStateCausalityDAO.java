@@ -10,6 +10,9 @@ import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
 import org.eclipse.rdf4j.repository.manager.RepositoryManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class EventToStateCausalityDAO {
@@ -36,6 +39,25 @@ public class EventToStateCausalityDAO {
         }
         this.eventURI = eventURI;
         this.baseURI = eventURI.split("#")[0] + "#";
+    }
+
+    public Event getEventDateTime() {
+        LOGGER.trace("getEventDateTime()");
+        Event event = new Event(this.eventURI);
+        RepositoryConnection connection = repository.getConnection();
+        String query = this.query.GET_EVENT_TIME.replace("eventURI", eventURI);
+        TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+        TupleQueryResult tupleQueryResult = tupleQuery.evaluate();
+        try {
+            for (BindingSet bindings : tupleQueryResult) {
+                event.setDateTime(LocalDateTime.parse(bindings.getBinding("eventTime").getValue().stringValue(),
+                        DateTimeFormatter.ISO_DATE_TIME));
+            }
+            return event;
+        } finally {
+            LOGGER.trace("Closing connection to graphdb..");
+            connection.close();
+        }
     }
 
     public void insertStartState(){

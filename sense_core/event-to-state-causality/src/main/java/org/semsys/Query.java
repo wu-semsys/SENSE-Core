@@ -1,6 +1,14 @@
 package org.semsys;
 
 public class Query {
+    String GET_EVENT_TIME = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+            "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "select ?eventTime where { \n" +
+            "\tBIND (<eventURI> AS ?event) \n" +
+            "    ?so sosa:hasResult ?event .\n" +
+            "    ?so sosa:phenomenonTime ?eventTime .\n" +
+            "}";
     String ADD_NEW_START_STATE = "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "PREFIX base: <baseURI>\n" +
@@ -77,8 +85,7 @@ public class Query {
             "insert{\n" +
             "    GRAPH <namedGraphURI> {\n" +
             "        ?causeState s:causallyRelated ?effectState . \n" +
-            "        << ?causeState s:causallyRelated ?effectState >> sense:hasCausalSource ?stc .
-"
+            "        << ?causeState s:causallyRelated ?effectState >> sense:hasCausalSource ?stc ." +
             "       \n" +
             "   }\n" +
             "}\n" +
