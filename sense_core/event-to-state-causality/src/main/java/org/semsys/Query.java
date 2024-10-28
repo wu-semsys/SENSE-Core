@@ -15,8 +15,8 @@ public class Query {
             "\n" +
             "INSERT {\n" +
             "    GRAPH <namedGraphURI> {\n" +
-            "        ?eventSensor sosa:madeObservation sosa:startedStateType_observation_eventURI .\n" +
-            "        sosa:startedStateType_observation_eventURI sosa:hasResult s:startedStateType_eventURI ; # define st\n" +
+            "        ?eventSensor sosa:madeObservation base:startedStateType_observation_eventURI .\n" +
+            "        base:startedStateType_observation_eventURI sosa:hasResult base:startedStateType_eventURI ; # define st\n" +
             "        sosa:usedProcedure s:EventToStateConversion ;\n" +
             "        sosa:observedProperty ?observedProperty .\n" +
             "        base:startedStateType_eventURI a s:State ;\n" +
