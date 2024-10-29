@@ -1,16 +1,25 @@
 package org.semsys;
 
 public class Query {
+    String GET_EVENT_TIME = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+            "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "select ?eventTime where { \n" +
+            "\tBIND (<eventURI> AS ?event) \n" +
+            "    ?so sosa:hasResult ?event .\n" +
+            "    ?so sosa:phenomenonTime ?eventTime .\n" +
+            "}";
     String ADD_NEW_START_STATE = "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "PREFIX base: <baseURI>\n" +
             "\n" +
             "INSERT {\n" +
             "    GRAPH <namedGraphURI> {\n" +
-            "        ?eventSensor sosa:madeObservation sosa:startedStateType_observation_eventURI .\n" +
-            "        sosa:startedStateType_observation_eventURI sosa:hasResult s:startedStateType_eventURI ; # define st\n" +
+            "        ?eventSensor sosa:madeObservation base:startedStateType_observation_eventURI .\n" +
+            "        base:startedStateType_observation_eventURI sosa:hasResult base:startedStateType_eventURI ; # define st\n" +
             "        sosa:usedProcedure s:EventToStateConversion ;\n" +
             "        sosa:observedProperty ?observedProperty .\n" +
-            "        s:startedStateType_eventURI a s:State ;\n" +
+            "        base:startedStateType_eventURI a s:State ;\n" +
             "                    s:hasStateType ?startedStateType ;\n" +
             "                    s:hasStartEvent <eventURI2> .\n" +
             "    }\n" +
@@ -45,8 +54,13 @@ public class Query {
             "    ?eventSensor sosa:madeObservation ?eventObservation .\n" +
             "    ?endedStateType s:hasEndEventType ?eventType .\n" +
             "    ?endedState s:hasStateType ?endedStateType .\n" +
+            "    ?endedState s:hasStartEvent ?startEvent .\n" +
+            "    ?startEventObservation sosa:hasResult ?startEvent ;\n" +
+            "        sosa:phenomenonTime ?startEventTime .\n" +
+            "    FILTER (?eventTime >= ?startEventTime)\n" +
             "    FILTER NOT EXISTS { ?endedState s:hasEndEvent ?endEvent . }\n" +
             "}\n";
+			
     String COLLECT_EVENT_DATA = "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "\n" +
@@ -70,7 +84,8 @@ public class Query {
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "insert{\n" +
             "    GRAPH <namedGraphURI> {\n" +
-            "        ?causeState ?causalityType ?effectState . # is this allowed? ?causalRelation\n" +
+            "        ?causeState s:causallyRelated ?effectState . \n" +
+            "        << ?causeState s:causallyRelated ?effectState >> sense:hasCausalSource ?stc ." +
             "       \n" +
             "   }\n" +
             "}\n" +
@@ -118,7 +133,7 @@ public class Query {
             "    }\n" +
             "\n" +
             "    {\n" +
-            "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation WHERE { \n" +
+            "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation ?stc WHERE { \n" +
             "            ?stc a s:StateTypeCausality .\n" +
             "            ?stc s:cause ?causeStateType .    \n" +
             "            ?stc s:effect ?effectStateType .\n" +

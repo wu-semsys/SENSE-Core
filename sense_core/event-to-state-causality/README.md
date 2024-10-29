@@ -35,6 +35,23 @@ docker run event-to-state-causality
 
 Ensure that the MQTT broker and GraphDB are running and accessible.
 
+To run the container in test mode using docker run:
+
+```sh
+docker run -e APP_ENV=test event-to-state-causality
+```
+
+or you can also add this to your docker compose file
+
+```sh
+environment:
+  - APP_ENV=test
+```
+
+In test mode:
+
+- The application buffers incoming events and processes them after a delay (e.g., every 2 minutes). This allows for testing scenarios where events may arrive out of order or in bulk
+- In test mode, events are sorted by their timestamps before being processed
 
 ## Configuration
 
