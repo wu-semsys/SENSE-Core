@@ -17,6 +17,7 @@ class KnowledgebaseConfiguration:
         self.repo_name = config["graph-database"]["repo-name"]
         self.repo_url = config["graph-database"]["repo-url"]
         self.repo_mgmt_api_url = config["graph-database"]["repo-mgmt-api-url"]
+        self.repo_name_final = config["graph-database"].get("repo-name-final",None)
         self.repo_recreate = config["graph-database"]["repo-recreate"] # if repo_recreate==true, the script will delete the repository and recreate it as defined in the repo_config_file
         script_path = os.path.dirname(os.path.abspath(__file__))
         self.repo_config_file = os.path.join(script_path, config["graph-database"]["repo-config-file"]) 
