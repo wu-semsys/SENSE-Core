@@ -80,7 +80,6 @@ public class Query {
 
     String ADD_CAUSALITY = "PREFIX sense: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
-            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>\n" +
             "insert{\n" +
             "    GRAPH <namedGraphURI> {\n" +
@@ -98,8 +97,10 @@ public class Query {
             "    ?effectState s:hasStartEvent ?startEvent .\n" +
             "    ?effectSensor sosa:madeObservation ?effectObservation .\n" +
             "    ?effectPlatform sosa:hosts ?effectSensor .\n" +
-            "    ?effectParentPlatform sosa:hosts ?effectPlatform .\n" +
             "    \n" +
+            "    OPTIONAL {\n" +
+            "        ?effectParentPlatform sosa:hosts ?effectPlatform .\n" +
+            "    } \n" +
             "    OPTIONAL {\n" +
             "        ?effectObservation1 sosa:hasResult ?endEvent .\n" +
             "        ?endEvent a s:Event .\n" +
@@ -119,8 +120,10 @@ public class Query {
             "    ?causeState s:hasStartEvent ?causeStartEvent .\n" +
             "    ?causeSensor sosa:madeObservation ?causeObservation .\n" +
             "    ?causePlatform sosa:hosts ?causeSensor .\n" +
-            "    ?causeParentPlatform sosa:hosts ?causePlatform .\n" +
-            "    \n" +
+            "    \n" +            
+            "    OPTIONAL {\n" +
+            "        ?causeParentPlatform sosa:hosts ?causePlatform .\n" +
+            "    } \n" +
             "    OPTIONAL {\n" +
             "        ?causeObservation1 sosa:hasResult ?causeEndEvent .\n" +
             "        ?causeEndEvent a s:Event .\n" +
@@ -144,13 +147,13 @@ public class Query {
             "    }\n" +
             "\n" +
             "    BIND(\n" +
-            "        IF(?platformRequirement = s:samePlatform, ?causePlatform = ?effectPlatform, \n" +
-            "        IF(?platformRequirement = s:parentPlatform, ?causeParentPlatform = ?effectPlatform, \n" +
-            "        IF(?platformRequirement = s:siblingPlatform, ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
+            "        IF(?platformRequirement = 'samePlatform', ?causePlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = 'parentPlatform', ?causeParentPlatform = ?effectPlatform, \n" +
+            "        IF(?platformRequirement = 'siblingPlatform', ?causeParentPlatform = ?effectParentPlatform, true))) as ?Platform_filter\n" +
             "    )\n" +
             "    BIND(\n" +
-            "        IF(?temporalRelation = s:overlaps, ?causeStart <= ?effectStart && ?effectStart <= ?causeEnd, \n" +
-            "        IF(?temporalRelation = s:before, ?causeStart <= ?effectStart, true)) as ?temporal_filter\n" +
+            "        IF(?temporalRelation = 'overlaps', ?causeStart <= ?effectStart && ?effectStart <= ?causeEnd, \n" +
+            "        IF(?temporalRelation = 'before', ?causeStart <= ?effectStart, true)) as ?temporal_filter\n" +
             "    )\n" +
             "\n" +
             "    FILTER(?Platform_filter && ?temporal_filter) \n" +
