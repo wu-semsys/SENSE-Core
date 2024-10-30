@@ -8,31 +8,31 @@ def ccToLines(label):
 def run_select_query(StateToExplain, config):
     query = f"""
     PREFIX sense:  <http://w3id.org/explainability/sense#>
-    PREFIX s: <http://w3id.org/explainability/sense#>
-    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
     PREFIX sosa: <http://www.w3.org/ns/sosa/>
+    PREFIX : <http://example.org/seehub#>
+
     SELECT distinct ?causesensor ?cause ?cset ?ceet ?relation ?effectsensor ?effect ?set ?eet
     WHERE {{
-        ?cause ?relation ?effect .
-        ?effect (s:causallyRelated)* s:{StateToExplain} .
-        ?relation rdfs:subPropertyOf s:causallyRelated .
+        ?cause sense:causallyRelated ?effect .
+        ?effect (sense:causallyRelated)* :{StateToExplain} .
+        <<?cause sense:causallyRelated ?effect>> sense:hasCausalSource ?stc .
+        ?stc sense:causalRelation ?relation .
         ?causeobservation sosa:hasResult ?cause .
         ?causesensor sosa:madeObservation ?causeobservation .
         ?effectobservation sosa:hasResult ?effect .
         ?effectsensor sosa:madeObservation ?effectobservation .
-        ?effect s:hasStartEvent ?se .
-        ?effect s:hasEndEvent ?ee .
+        ?effect sense:hasStartEvent ?se .
+        ?effect sense:hasEndEvent ?ee .
         ?seo sosa:hasResult ?se .
         ?seo sosa:phenomenonTime ?set .
         ?eeo sosa:hasResult ?ee .
         ?eeo sosa:phenomenonTime ?eet .
-        ?cause s:hasStartEvent ?cse .
-        ?cause s:hasEndEvent ?cee .
+        ?cause sense:hasStartEvent ?cse .
+        ?cause sense:hasEndEvent ?cee .
         ?cseo sosa:hasResult ?cse .
         ?cseo sosa:phenomenonTime ?cset .
         ?ceeo sosa:hasResult ?cee .
         ?ceeo sosa:phenomenonTime ?ceet .
-        FILTER(?relation != s:causallyRelated) .
     }}
     """
 
@@ -78,13 +78,13 @@ def run_select_query(StateToExplain, config):
 def get_state_to_explain(datetime_str, config):
     query = f"""
     PREFIX : <http://example.org/seehub#>
-    PREFIX s: <http://w3id.org/explainability/sense#>
+    PREFIX sense: <http://w3id.org/explainability/sense#>
     PREFIX sosa: <http://www.w3.org/ns/sosa/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
     SELECT ?v WHERE {{ 
-        ?v a s:State .
-        ?v s:hasStateType :DemandEnvelopeViolation_State .
-        ?v s:hasStartEvent ?e .
+        ?v a sense:State .
+        ?v sense:hasStateType :DemandEnvelopeViolation_State .
+        ?v sense:hasStartEvent ?e .
         ?o sosa:hasResult ?e .
         ?o sosa:phenomenonTime ?t .
         FILTER (?t <= "{datetime_str}"^^xsd:dateTime)
