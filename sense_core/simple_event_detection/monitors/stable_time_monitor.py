@@ -47,7 +47,7 @@ class StableTimeMonitor(WindowBasedMonitor):
         has_significant_diff = False
         for j, (_, value1) in enumerate(window):
             for _, value2 in window[j + 1 :]:
-                if value2 - value1 >= self.maximum_delta:
+                if value2 < value1 - self.maximum_delta or value1 + self.maximum_delta < value2:
                     has_significant_diff = True
                     break
             if has_significant_diff:
