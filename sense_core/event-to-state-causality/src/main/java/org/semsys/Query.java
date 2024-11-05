@@ -139,7 +139,7 @@ public class Query {
             "        SELECT ?causeStateType ?effectStateType ?causalityType ?platformRequirement ?temporalRelation ?stc WHERE { \n" +
             "            ?stc a sense:StateTypeCausality .\n" +
             "            ?stc sense:cause ?causeStateType .    \n" +
-            "            ?stc sense:effect ?eff ectStateType .\n" +
+            "            ?stc sense:effect ?effectStateType .\n" +
             "            ?stc sense:causalRelation ?causalityType .\n" +
             "            ?stc sense:temporalRelation ?temporalRelation .\n" +
             "            ?stc sense:topologicalRelation ?platformRequirement .\n" +
