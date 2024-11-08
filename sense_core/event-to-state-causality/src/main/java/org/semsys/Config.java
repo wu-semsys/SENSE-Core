@@ -14,9 +14,9 @@ public class Config {
     public MQTTConfig mqtt;
     @JsonProperty("semantic-model")
     public SemanticModelConfig semanticModel;
-    @JsonProperty("chatbot-integration")
+    @JsonProperty("explanation-interface")
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public ChatbotBridgeConfig chatbotBridge;
+    public ExplanationInterfaceConfig explanationInterface;
 		
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class MQTTConfig {
@@ -35,8 +35,15 @@ public class Config {
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class ChatbotBridgeConfig {
+    public static class ChatBotIntegrationConfig {
         public String url;
+    }
+
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ExplanationInterfaceConfig {
+        @JsonProperty("chatbot-integration")
+        @JsonInclude(JsonInclude.Include.NON_NULL)
+        public ChatBotIntegrationConfig chatBotIntegration;
     }
 
     public static Config load(String filePath) throws IOException {

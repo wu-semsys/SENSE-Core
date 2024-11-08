@@ -138,9 +138,14 @@ public class EventBroker {
         eventToStateCausalityDAO.insertStartState();
         eventToStateCausalityDAO.insertNewEndState();
         eventToStateCausalityDAO.insertCausality();
-		if (config.chatbotBridge != null && config.chatbotBridge.url != null && !config.chatbotBridge.url.isEmpty()) {
-            LOGGER.info("Sending message to Chatbot Bridge URL: {}", config.chatbotBridge.url);
-            sendMessageToChatbotBridge(config.chatbotBridge.url, message);
+		if (config.explanationInterface.chatBotIntegration != null && config.explanationInterface.chatBotIntegration.url != null
+                && !config.explanationInterface.chatBotIntegration.url.isEmpty()) {
+            LOGGER.trace("Sending message to Chatbot Bridge URL: {}", config.explanationInterface.chatBotIntegration.url);
+            try {
+                sendMessageToChatbotBridge(config.explanationInterface.chatBotIntegration.url, message);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         } else {
             LOGGER.trace("No Chatbot Bridge URL configured.");
 		}
