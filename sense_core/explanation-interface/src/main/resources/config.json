@@ -1,0 +1,13 @@
+{
+	"semantic-model": {
+		"host": "knowledgebase",
+		"port": 7200,
+		"repository": "seehub"
+	},
+	"explanation-interface": {
+		"port": 5001,
+		"chatbot-integration": {
+			"named-graph": "http://w3id.org/explainability/graph/seehub_chatbot"
+		}
+	}
+}
