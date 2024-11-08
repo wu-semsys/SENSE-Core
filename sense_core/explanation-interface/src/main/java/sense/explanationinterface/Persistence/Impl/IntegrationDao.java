@@ -57,6 +57,7 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
             state = false;
             event = getEventDataWithoutState(integrationDto);
         }
+        String resultQuery = query.RESULT_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph);
         if (!state) {
             insertEventChatbotData(integrationDto);
             insertObservationChatbotData(event.getObservation());
@@ -67,7 +68,9 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
         } else if (event.getEventType().equals("endEvent")) {
             insertEventChatbotData(integrationDto);
             insertObservationChatbotData(event.getObservation());
+            insertStateChatbotData(event.getState());
         }
+        executeInsertQuery(resultQuery);
     }
 
     @Override
@@ -84,7 +87,6 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
                 query.EVENT_TYPE_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph),
                 query.OBSERVABLE_PROPERTY_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph),
                 query.PROCEDURE_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph),
-                query.RESULT_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph),
                 query.STATE_TYPE_CAUSALITY_QUERY.replaceAll("namedGraph", config.explanationInterface.chatBotIntegration.namedGraph)
         };
         for (String sparqlQuery : staticQueries) {

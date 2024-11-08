@@ -16,4 +16,5 @@ COPY --from=build /opt/explanation-interface/target/Explanation-Interface-1.0-SN
 
 WORKDIR /opt/explanation-interface
 
-CMD ["java", "-jar", "explanation-interface.jar"]
+CMD ["java", "-jar", "explanation-interface.jar", "/opt/explanation-interface/config.json"]
+

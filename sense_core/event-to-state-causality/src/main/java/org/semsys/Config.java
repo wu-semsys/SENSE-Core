@@ -26,6 +26,7 @@ public class Config {
         public String clientId;
     }
 
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class SemanticModelConfig {
         public String host;
         public int port;

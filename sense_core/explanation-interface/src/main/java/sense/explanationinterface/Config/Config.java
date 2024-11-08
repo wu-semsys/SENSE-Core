@@ -4,10 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Config {
     @JsonProperty("semantic-model")
     public SemanticModelConfig semanticModel;
@@ -40,11 +43,18 @@ public class Config {
 
     public static Config load(String filePath) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
-        try (InputStream inputStream = Config.class.getClassLoader().getResourceAsStream(filePath)) {
+        InputStream inputStream;
+
+        File externalFile = new File(filePath);
+        if (externalFile.exists()) {
+            inputStream = new FileInputStream(externalFile);
+        } else {
+            inputStream = Config.class.getClassLoader().getResourceAsStream(filePath);
             if (inputStream == null) {
-                throw new FileNotFoundException(filePath + " not found in classpath");
+                throw new FileNotFoundException(filePath + " not found in classpath or as an external file");
             }
-            return mapper.readValue(inputStream, Config.class);
         }
+        return mapper.readValue(inputStream, Config.class);
     }
+
 }

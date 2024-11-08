@@ -282,33 +282,33 @@ public class QueryConfig {
             "    ?observation a sosa:Observation .\n" +
             "}";
 
-    public final String EXPLANATION_SELECT_QUERY = "PREFIX : <baseURI>\n" +
-            "    PREFIX s: <http://w3id.org/explainability/sense#>\n" +
-            "    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+    public final String EXPLANATION_SELECT_QUERY = "PREFIX sense:  <http://w3id.org/explainability/sense#>\n" +
             "    PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "    PREFIX : <baseURI>\n" +
+            "\n" +
             "    SELECT distinct ?causesensor ?cause ?cset ?ceet ?relation ?effectsensor ?effect ?set ?eet\n" +
             "    WHERE {{\n" +
-            "        ?cause ?relation ?effect .\n" +
-            "        ?effect (s:causallyRelated)* s:StateToExplain .\n" +
-            "        ?relation rdfs:subPropertyOf s:causallyRelated .\n" +
+            "        ?cause sense:causallyRelated ?effect .\n" +
+            "        ?effect (sense:causallyRelated)* :StateToExplain .\n" +
+            "        <<?cause sense:causallyRelated ?effect>> sense:hasCausalSource ?stc .\n" +
+            "        ?stc sense:causalRelation ?relation .\n" +
             "        ?causeobservation sosa:hasResult ?cause .\n" +
             "        ?causesensor sosa:madeObservation ?causeobservation .\n" +
             "        ?effectobservation sosa:hasResult ?effect .\n" +
             "        ?effectsensor sosa:madeObservation ?effectobservation .\n" +
-            "        ?effect s:hasStartEvent ?se .\n" +
-            "        ?effect s:hasEndEvent ?ee .\n" +
+            "        ?effect sense:hasStartEvent ?se .\n" +
+            "        ?effect sense:hasEndEvent ?ee .\n" +
             "        ?seo sosa:hasResult ?se .\n" +
             "        ?seo sosa:phenomenonTime ?set .\n" +
             "        ?eeo sosa:hasResult ?ee .\n" +
             "        ?eeo sosa:phenomenonTime ?eet .\n" +
-            "        ?cause s:hasStartEvent ?cse .\n" +
-            "        ?cause s:hasEndEvent ?cee .\n" +
+            "        ?cause sense:hasStartEvent ?cse .\n" +
+            "        ?cause sense:hasEndEvent ?cee .\n" +
             "        ?cseo sosa:hasResult ?cse .\n" +
             "        ?cseo sosa:phenomenonTime ?cset .\n" +
             "        ?ceeo sosa:hasResult ?cee .\n" +
             "        ?ceeo sosa:phenomenonTime ?ceet .\n" +
-            "        FILTER(?relation != s:causallyRelated) .\n" +
-            "    }}";
+            "    }}\n";
 
     public final String STATE_TO_EXPLAIN = "PREFIX : <baseURI>\n" +
             "    PREFIX s: <http://w3id.org/explainability/sense#>\n" +
