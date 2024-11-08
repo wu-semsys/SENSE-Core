@@ -2,6 +2,10 @@ package sense.explanationinterface.Persistence.Impl;
 
 import org.eclipse.rdf4j.model.Value;
 import org.eclipse.rdf4j.query.BindingSet;
+import org.eclipse.rdf4j.query.BooleanQuery;
+import org.eclipse.rdf4j.query.GraphQuery;
+import org.eclipse.rdf4j.query.MalformedQueryException;
+import org.eclipse.rdf4j.query.Query;
 import org.eclipse.rdf4j.query.TupleQuery;
 import org.eclipse.rdf4j.query.TupleQueryResult;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
@@ -18,7 +22,10 @@ import sense.explanationinterface.Entity.Explanation;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 public class ExplanationDao implements sense.explanationinterface.Persistence.ExplanationDao {
@@ -52,10 +59,9 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
 
     @Override
     public String getStateToExplain(String datetimeStr) throws Exception {
-        LOGGER.info("getStateToExplain({})", datetimeStr);
+        LOGGER.trace("getStateToExplain({})", datetimeStr);
         initializeRepository();
         String query = queryConfig.STATE_TO_EXPLAIN.replaceAll("datetime_str", datetimeStr);
-        LOGGER.info(query);
         try (RepositoryConnection connection = repository.getConnection()) {
             TupleQuery tupleQuery = connection.prepareTupleQuery(query);
 
@@ -79,10 +85,9 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
 
     @Override
     public List<Explanation> runSelectQuery(String stateToExplain) throws Exception {
-        LOGGER.info("runSelectQuery({})", stateToExplain);
+        LOGGER.trace("runSelectQuery({})", stateToExplain);
         initializeRepository();
         String query = queryConfig.EXPLANATION_SELECT_QUERY.replaceAll("StateToExplain", stateToExplain);
-        LOGGER.info(query);
         List<Explanation> explanations = new ArrayList<>();
 
         try (RepositoryConnection connection = repository.getConnection()) {
@@ -120,5 +125,61 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
         }
 
         return explanations;
+    }
+
+    @Override
+    public Map<String, Object> executeSparqlQuery(String sparqlQuery) {
+        LOGGER.trace("executeSparqlQuery({})", sparqlQuery);
+        initializeRepository();
+
+        try (RepositoryConnection connection = repository.getConnection()) {
+            Query query = connection.prepareQuery(sparqlQuery);
+
+            if (query instanceof TupleQuery) {
+                TupleQuery tupleQuery = (TupleQuery) query;
+                List<Map<String, String>> resultsList = new ArrayList<>();
+                List<String> bindingNames;
+
+                try (TupleQueryResult result = tupleQuery.evaluate()) {
+                    bindingNames = result.getBindingNames();
+
+                    while (result.hasNext()) {
+                        BindingSet bindingSet = result.next();
+                        Map<String, String> row = new HashMap<>();
+
+                        for (String bindingName : bindingNames) {
+                            Value value = bindingSet.getValue(bindingName);
+                            row.put(bindingName, value != null ? value.stringValue() : null);
+                        }
+
+                        resultsList.add(row);
+                    }
+                }
+
+                Map<String, Object> response = new HashMap<>();
+                response.put("head", Collections.singletonMap("vars", bindingNames));
+                response.put("results", Collections.singletonMap("bindings", resultsList));
+
+                return response;
+
+            } else if (query instanceof BooleanQuery) {
+                BooleanQuery booleanQuery = (BooleanQuery) query;
+                boolean result = booleanQuery.evaluate();
+                Map<String, Object> response = new HashMap<>();
+                response.put("boolean", result);
+                return response;
+
+            } else if (query instanceof GraphQuery) {
+                throw new UnsupportedOperationException("Graph queries are not supported in this endpoint.");
+            } else {
+                throw new IllegalArgumentException("Unsupported query type.");
+            }
+        } catch (MalformedQueryException e) {
+            LOGGER.error("Malformed SPARQL query: {}", e.getMessage());
+            throw new IllegalArgumentException("Malformed SPARQL query: " + e.getMessage(), e);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while executing SPARQL query: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 }

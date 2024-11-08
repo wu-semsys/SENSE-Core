@@ -14,6 +14,7 @@ import sense.explanationinterface.Entity.Explanation;
 import sense.explanationinterface.Exception.NoStateFoundException;
 import sense.explanationinterface.Persistence.ExplanationDao;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,6 +38,12 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
                 .collect(Collectors.toList());
 
         return new ExplanationResponseDto(stateToExplain, explanationDtos);
+    }
+
+    @Override
+    public Map<String, Object> executeSparqlQuery(String sparqlQuery) throws Exception {
+        LOGGER.trace("executeSparqlQuery({})", sparqlQuery);
+        return explanationDao.executeSparqlQuery(sparqlQuery);
     }
 
     private String getStateToExplain(String datetimeStr) throws Exception {
