@@ -16,7 +16,7 @@ def get_uri(variable: str, binding: dict) -> URIRef:
     return URIRef(variableBinding["value"])
 
 
-def get_string(variable: str, binding: dict) -> str:
+def get_literal(variable: str, binding: dict) -> str:
     if not variable in binding:
         raise KnowledgeBaseException(f"Expected to find a binding for variable {variable}.")
 
@@ -24,7 +24,12 @@ def get_string(variable: str, binding: dict) -> str:
     if variableBinding["type"] != "literal":
         raise KnowledgeBaseException(f"Variable {variable} did not bind to a Literal. This is unexpected behavior.")
 
-    value = variableBinding["value"]
+    return variableBinding["value"]
+
+
+def get_string(variable: str, binding: dict) -> str:
+    value = get_literal(variable, binding)
+
     if not isinstance(value, str):
         raise KnowledgeBaseException(f"Expected to find a string literal. Found: {value}.")
 

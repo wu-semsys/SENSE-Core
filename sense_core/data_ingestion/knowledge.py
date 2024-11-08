@@ -24,7 +24,7 @@ class DataIngestionKnowledgeRepository:
 
             select ?point ?timeseries_id where { 
                 ?point rdf:type sosa:Sensor .
-                ?point s:hasTimeseriesId ?timeseries_id .
+                ?point s:dataSource ?timeseries_id .
             }
             """,
         )

@@ -6,17 +6,17 @@ from rdflib import URIRef
 
 
 @dataclass
-class Variable:
+class ParameterBinding:
     name: str
 
 
 @dataclass
-class UnboundVariable(Variable):
-    pass
+class LiteralParameterBinding(ParameterBinding):
+    literal: any
 
 
 @dataclass
-class SignalBoundVariable(Variable):
+class SignalParameterBinding(ParameterBinding):
     signal_uri: URIRef
 
 
@@ -26,12 +26,9 @@ class EventDetectionProcedure:
     sensor_uri: URIRef
     property_uri: URIRef
     event_type_uri: URIRef
-
-
-@dataclass
-class STLEventDetectionProcedure(EventDetectionProcedure):
-    formula: str
-    variables: List[Variable]
+    method: str
+    definition: str
+    parameter_bindings: List[ParameterBinding]
 
 
 @dataclass

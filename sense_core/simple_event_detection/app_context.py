@@ -3,10 +3,36 @@ import time
 from typing import List
 from simple_event_detection.configuration import MonitoringConfiguration
 from simple_event_detection.knowledge import MonitoringKnowledgeRepository
+from simple_event_detection.monitors.fall_time_monitor import FallTimeMonitor
+from simple_event_detection.monitors.rise_time_monitor import RiseTimeMonitor
+from simple_event_detection.monitors.stable_time_monitor import StableTimeMonitor
 from simple_event_detection.time import Clock, EventBasedClock
-from simple_event_detection.monitor import STLEventDetector
+from simple_event_detection.monitors.stl_monitor import STLMonitor
 from simple_event_detection.event_broker import MqttEventBroker
-from shared.model import SensorEvent
+from shared.model import EventDetectionProcedure, SensorEvent
+
+
+def create_custom_monitor(sp: EventDetectionProcedure, broker: MqttEventBroker):
+    if sp.definition == "FallTimeMonitor":
+        return FallTimeMonitor(sp, broker)
+
+    if sp.definition == "RiseTimeMonitor":
+        return RiseTimeMonitor(sp, broker)
+
+    if sp.definition == "StableTimeMonitor":
+        return StableTimeMonitor(sp, broker)
+
+    raise Exception("Unknown custom monitor ", sp.definition)
+
+
+def create_monitor(sp: EventDetectionProcedure, broker: MqttEventBroker):
+    if sp.method == "STL":
+        return STLMonitor(sp, broker)
+
+    if sp.method == "CustomMonitor":
+        return create_custom_monitor(sp, broker)
+
+    raise Exception("Cannot create monitor for method ", sp.method)
 
 
 class AppContext:
@@ -25,7 +51,7 @@ class AppContext:
         self.clock = clock
         self.event_broker = event_broker
         self.repository = repository
-        self.monitors: List[STLEventDetector] = []
+        self.monitors: List[STLMonitor] = []
 
     def initialize(self) -> None:
         logging.info("Initializing app context...")
@@ -34,7 +60,7 @@ class AppContext:
         self.monitors = []
         self.relevant_topics = set()
         for sp in event_detection_procedures:
-            monitor = STLEventDetector(sp, self.event_broker)
+            monitor = create_monitor(sp, self.event_broker)
             self.monitors.append(monitor)
         logging.info("Created Monitors.")
 
