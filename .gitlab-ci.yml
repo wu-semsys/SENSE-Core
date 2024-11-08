@@ -69,7 +69,7 @@ build-event-to-state-causality:
   only:
     - main
     
-build-explanation-engine:
+build-explanation-interface:
   stage: build
   tags:
     - linux-docker-runner
@@ -78,6 +78,6 @@ build-explanation-engine:
   script:
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
     - docker buildx create --use
-    - docker buildx build -t $CI_REGISTRY/sense/sense-core/explanation-engine:ontology-v2 --platform linux/amd64,linux/arm64 --file ./sense_core/explanation-engine/Dockerfile ./sense_core/explanation-engine --push
+    - docker buildx build -t $CI_REGISTRY/sense/sense-core/explanation-interface:ontology-v2 --platform linux/amd64,linux/arm64 --file ./sense_core/explanation-interface/Dockerfile ./sense_core/explanation-interface --push
   only:
     - main
