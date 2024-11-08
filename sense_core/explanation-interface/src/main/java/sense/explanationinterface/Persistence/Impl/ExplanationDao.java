@@ -61,7 +61,9 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     public String getStateToExplain(String datetimeStr) throws Exception {
         LOGGER.trace("getStateToExplain({})", datetimeStr);
         initializeRepository();
-        String query = queryConfig.STATE_TO_EXPLAIN.replaceAll("datetime_str", datetimeStr);
+        String query = queryConfig.STATE_TO_EXPLAIN
+                .replaceAll("datetime_str", datetimeStr)
+                .replaceAll("baseURI", config.semanticModel.baseUri);
         try (RepositoryConnection connection = repository.getConnection()) {
             TupleQuery tupleQuery = connection.prepareTupleQuery(query);
 
@@ -84,10 +86,12 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     }
 
     @Override
-    public List<Explanation> runSelectQuery(String stateToExplain) throws Exception {
+    public List<Explanation> runSelectQuery(String stateToExplain) {
         LOGGER.trace("runSelectQuery({})", stateToExplain);
         initializeRepository();
-        String query = queryConfig.EXPLANATION_SELECT_QUERY.replaceAll("StateToExplain", stateToExplain);
+        String query = queryConfig.EXPLANATION_SELECT_QUERY
+                .replaceAll("StateToExplain", stateToExplain)
+                .replaceAll("baseURI", config.semanticModel.baseUri);
         List<Explanation> explanations = new ArrayList<>();
 
         try (RepositoryConnection connection = repository.getConnection()) {

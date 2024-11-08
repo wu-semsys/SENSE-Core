@@ -118,7 +118,7 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
                     event.setEventType(bindings.getValue("eventType").stringValue());
                     event.setObservation(bindings.getValue("observation").stringValue());
                     event.setState(bindings.getValue("state").stringValue());
-                    LOGGER.info("Event Type: {}, Observation: {}, State: {}", event.getEventType(), event.getObservation(), event.getState());
+                    LOGGER.trace("Event Type: {}, Observation: {}, State: {}", event.getEventType(), event.getObservation(), event.getState());
                 }
             }
         } catch (Exception e) {
@@ -138,7 +138,7 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
                 for (BindingSet bindings : tupleQueryResult) {
                     event.setEventType(bindings.getValue("eventType").stringValue());
                     event.setObservation(bindings.getValue("observation").stringValue());
-                    LOGGER.info("Event Type: {}, Observation: {}", event.getEventType(), event.getObservation());
+                    LOGGER.trace("Event Type: {}, Observation: {}", event.getEventType(), event.getObservation());
                 }
             }
         } catch (Exception e) {

@@ -282,7 +282,7 @@ public class QueryConfig {
             "    ?observation a sosa:Observation .\n" +
             "}";
 
-    public final String EXPLANATION_SELECT_QUERY = "PREFIX sense:  <http://w3id.org/explainability/sense#>\n" +
+    public final String EXPLANATION_SELECT_QUERY = "PREFIX : <baseURI>\n" +
             "    PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
             "    PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
@@ -310,7 +310,7 @@ public class QueryConfig {
             "        FILTER(?relation != s:causallyRelated) .\n" +
             "    }}";
 
-    public final String STATE_TO_EXPLAIN = "PREFIX : <http://example.org/seehub#>\n" +
+    public final String STATE_TO_EXPLAIN = "PREFIX : <baseURI>\n" +
             "    PREFIX s: <http://w3id.org/explainability/sense#>\n" +
             "    PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
             "    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +

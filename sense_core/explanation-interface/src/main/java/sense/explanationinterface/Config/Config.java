@@ -20,6 +20,8 @@ public class Config {
         public String host;
         public int port;
         public String repository;
+        @JsonProperty("base-uri")
+        public String baseUri;
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
