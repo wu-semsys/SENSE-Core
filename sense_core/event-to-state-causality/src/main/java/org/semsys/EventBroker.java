@@ -1,5 +1,6 @@
 package org.semsys;
 
+import com.google.gson.Gson;
 import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
 import org.eclipse.paho.client.mqttv3.MqttCallback;
 import org.eclipse.paho.client.mqttv3.MqttClient;
@@ -10,6 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.Timer;
@@ -83,6 +87,35 @@ public class EventBroker {
         client.subscribe(topic);
     }
 
+    private void sendMessageToChatbotBridge(String url, String message) throws IOException {
+        LOGGER.trace("sendMessageToChatbotBridge({}, {})", url, message);
+
+        IntegrationDto integrationDto = new IntegrationDto();
+        integrationDto.setEventURI(message);
+
+        Gson gson = new Gson();
+        String jsonPayload = gson.toJson(integrationDto);
+
+        URL chatbotUrl = new URL(url);
+        HttpURLConnection connection = (HttpURLConnection) chatbotUrl.openConnection();
+        connection.setRequestMethod("POST");
+        connection.setDoOutput(true);
+        connection.setRequestProperty("Content-Type", "application/json; utf-8");
+        connection.setRequestProperty("Accept", "application/json");
+
+        try (OutputStream os = connection.getOutputStream()) {
+            byte[] input = jsonPayload.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int responseCode = connection.getResponseCode();
+        LOGGER.trace("Response Code from Chatbot Bridge: {}", responseCode);
+
+        if (responseCode != HttpURLConnection.HTTP_ACCEPTED && responseCode != HttpURLConnection.HTTP_OK) {
+            LOGGER.error("Failed to send message to Chatbot Bridge. Response code: {}", responseCode);
+        }
+    }
+
     private void bufferEvent(Event event) {
         eventQueue.add(event);
     }
@@ -105,7 +138,12 @@ public class EventBroker {
         eventToStateCausalityDAO.insertStartState();
         eventToStateCausalityDAO.insertNewEndState();
         eventToStateCausalityDAO.insertCausality();
+		if (config.chatbotBridge != null && config.chatbotBridge.url != null && !config.chatbotBridge.url.isEmpty()) {
+            LOGGER.info("Sending message to Chatbot Bridge URL: {}", config.chatbotBridge.url);
+            sendMessageToChatbotBridge(config.chatbotBridge.url, message);
+        } else {
+            LOGGER.trace("No Chatbot Bridge URL configured.");
+		}
     }
-
 
 }

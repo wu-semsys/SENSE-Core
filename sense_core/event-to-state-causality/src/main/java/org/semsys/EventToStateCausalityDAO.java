@@ -28,6 +28,7 @@ public class EventToStateCausalityDAO {
     private String baseURI;
 
     public EventToStateCausalityDAO(String eventURI, Config config) {
+		LOGGER.info("eventURI({})", eventURI);
         this.config = config;
         if (manager == null || repository == null) {
             LOGGER.trace("initialize connection to graphdb");
@@ -93,7 +94,7 @@ public class EventToStateCausalityDAO {
                 String query = insertQueryManipulation();
                 Update update = connection.prepareUpdate(query);
                 update.execute();
-                LOGGER.info("Insert new start state query executed successfully.");
+                LOGGER.trace("Insert new start state query executed successfully.");
             }
         } catch (Exception e) {
             LOGGER.error("Error executing insert new start state query: ", e);
@@ -111,7 +112,7 @@ public class EventToStateCausalityDAO {
                     .replaceAll("namedGraphURI", config.semanticModel.namedGraph);
             Update update = connection.prepareUpdate(query);
             update.execute();
-            LOGGER.info("Insert new end state query executed successfully.");
+            LOGGER.trace("Insert new end state query executed successfully.");
         } catch (Exception e) {
             LOGGER.error("Error executing insert new end state query: ", e);
         } finally {
@@ -137,7 +138,7 @@ public class EventToStateCausalityDAO {
             String query = this.query.ADD_CAUSALITY.replaceAll("namedGraphURI", config.semanticModel.namedGraph);
             Update update = connection.prepareUpdate(query);
             update.execute();
-            LOGGER.info("Insert causality query executed successfully.");
+            LOGGER.trace("Insert causality query executed successfully.");
         } catch (Exception e) {
             LOGGER.error("Error executing insert causality query: ", e);
         } finally {
