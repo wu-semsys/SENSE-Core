@@ -69,12 +69,19 @@ The configuration for the application is defined in a JSON file:
         "port": 7200,
         "repository": "seehub",
         "named-graph": "http://w3id.org/explainability/graph/seehub_dynamic"
+    },
+    "explanation-interface": {
+        "chatbot-integration": {
+            "url": "http://explanation-interface:5001/v1/api/integration"
+        }
     }
 }
 
 ```
 
 Ensure that the MQTT broker and GraphDB repository, host, and port are correctly set.
+
+(Optional) If chatbot-integration is defined, ensure that the url are correctly set.
 
 ## Code Structure
 
