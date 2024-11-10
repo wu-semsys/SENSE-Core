@@ -81,16 +81,16 @@ public class IntegrationDao implements sense.explanationinterface.Persistence.In
         LOGGER.trace("integrateStaticChatbotData()");
 
         String[] staticQueries = {
-                "SENSOR_QUERY",
-                "SENSOR_TYPE_QUERY",
-                "STATE_TYPE_QUERY",
-                "TEMPORAL_RELATION_QUERY",
-                "TOPOLOGICAL_RELATION_QUERY",
-                "CAUSAL_RELATION_QUERY",
-                "EVENT_TYPE_QUERY",
-                "OBSERVABLE_PROPERTY_QUERY",
-                "PROCEDURE_QUERY",
-                "STATE_TYPE_CAUSALITY_QUERY"
+                "SENSOR",
+                "SENSOR_TYPE",
+                "STATE_TYPE",
+                "TEMPORAL_RELATION",
+                "TOPOLOGICAL_RELATION",
+                "CAUSAL_RELATION",
+                "EVENT_TYPE",
+                "OBSERVABLE_PROPERTY",
+                "PROCEDURE",
+                "STATE_TYPE_CAUSALITY"
         };
 
         for (String queryName : staticQueries) {
