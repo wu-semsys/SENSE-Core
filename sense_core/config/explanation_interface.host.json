@@ -1,0 +1,27 @@
+"explanation-interface": {
+        "port": 5001,
+        "chatbot-integration": {
+            "url": "http://localhost:5001/v1/api/integration",
+            "named-graph": "http://w3id.org/explainability/graph/seehub_chatbot",
+			"queries": [
+				{
+					"name": "SENSOR",
+					"new-prefixes": [
+						"PREFIX ds: <https://vocab.sti2.at/ds/>"
+					],
+					"new-statements": [
+						"?s  ds:compliesWith <url>"
+					]
+				},
+				{
+					"name": "SENSOR_TYPE",
+					"new-prefixes": [
+						"PREFIX ds: <https://vocab.sti2.at/ds/>"
+					],
+					"new-statements": [
+						"?s  ds:compliesWith <url>;"
+					]
+				}
+			]
+		}
+	}

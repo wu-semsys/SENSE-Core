@@ -38,7 +38,7 @@ InfluxDB time-series database, as this often available in existing CPSs. The mod
 - **semantic-event-log-bridge:** This module is responsible for listening for detected events and publishing them in the semantic event log, resides with in the knowledgebase. Currently, only a GraphDB is supported as event log. [Further Information](sense_core/semantic_event_log_bridge/README.md)
 - **knowledgebase:** This module is responsible for providing a semantic data storage to the SENSE system. It initializes the semantic data storage [GraphDB](https://graphdb.ontotext.com/) with a repository, named graphs, and ttl files as defined in the configuration. [Further Information](sense_core/knowledgebase/README.md)
 - **event-to-state-causality:** This module contains a Java-based application that connects to te data-and-event-broker, subscribes to a topic, and processes incoming messages to infer event-to-state causality. The inferred states are then inserted into the knowledgebase. [Further Information](sense_core/event-to-state-causality/README.md)
-- **explanation-generation:** This module contains a Python-based application that provides explanations for specific states identified from a semantic model. The application connects to a SPARQL endpoint to fetch causal relationships and returns them as JSON responses via a Flask-based API. [Further Information](sense_core/explanation-engine/README.md)
+- **explanation-interface:** This module contains a Java-based application that provides explanations for specific states identified from a semantic model and if needed a way to integrates chatbot data. The application connects to a SPARQL endpoint to fetch causal relationships and returns them as JSON responses via a Spring-boot API. [Further Information](sense_core/explanation-interface/README.md)
 
 ## System Requirements
 The system requirements below were obtained by running the [Demo Use Case](https://git.ai.wu.ac.at/sense/seehub) via the following commands:
@@ -60,7 +60,7 @@ docker stats
 | data-ingestion | 92 MB | 43 MB |
 | semantic-event-log-bridge | 80 MB | 26 MB |
 | event-to-state-causality | 440 MB | 36 MB |
-| explanation-generation | 151 MB | 52 MB |
+| explanation-interface | 462 MB | 52 MB |
 | influxdb | 369 MB | 328 MB |
 | --- | --- | --- |
 | TOTAL | 2002 MB | 2144 MB |
@@ -106,7 +106,6 @@ We also provide this [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-
 
 ## Named Graphs and Namespaces
 Data within the knowledgebase is organized in different named graphs according to  [SENSE Named Graph List.xlsx](https://wu.sharepoint.com/:x:/r/sites/PR-FFGSENSE/Freigegebene%20Dokumente/General/1_WorkPackages/WP4_Semantics-basedEventExplainability/4.1%20SENSE%20Semantic%20Model/SENSE%20Named%20Graph%20List.xlsx?d=w136542f1c78046dfa38a3af2cea52535&csf=1&web=1&e=01o5Rt)
-
 
 ## Configuration Files
 Currently, we use configuration files that are specific to each module, e.g., there is a configuration file for the knowledgebase, another one for data_ingestion, etc. Eventually, we plan to merge these configuration files into one file, eliminating redundant entries/definitions.

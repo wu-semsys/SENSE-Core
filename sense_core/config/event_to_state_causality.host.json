@@ -1,13 +1,18 @@
 {
     "mqtt": {
-        "host": "mosquitto",
+        "host": "localhost",
         "port": 1883,
         "event-to-state-causality-id": "event-to-state-causality"
     },
     "semantic-model": {
-        "host": "knowledgebase",
+        "host": "localhost",
         "port": 7200,
         "repository": "seehub",
 		"named-graph": "http://w3id.org/explainability/graph/seehub_dynamic"
-    }
+    },
+	"explanation-interface": {
+		"chatbot-integration": {
+			"url": "http://localhost:5001/v1/api/integration"
+		}
+	}
 }

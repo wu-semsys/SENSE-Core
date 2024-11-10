@@ -95,7 +95,7 @@ The application configuration is managed through a `config.json` file located in
                         "PREFIX ex: <http://example.org/ex#>"
                     ],
                     "new-statements": [
-                        "ex:eventURI ex:hasType ex:startEvent ."
+                        "?s eventURI ex:hasType ex:startEvent ."
                     ]
                 },
                 {
@@ -104,7 +104,7 @@ The application configuration is managed through a `config.json` file located in
                         "PREFIX ex: <http://example.org/ex#>"
                     ],
                     "new-statements": [
-                        "ex:stateURI ex:hasValue \"active\" ."
+                        "?s ex:hasValue \"active\" ."
                     ]
                 }
             ]
@@ -112,6 +112,8 @@ The application configuration is managed through a `config.json` file located in
     }
 }
 ```
+
+Note: to add a new statements to its corresponding class, its important to use the subject variable ?s
 
 ### Configuration Parameters
 
