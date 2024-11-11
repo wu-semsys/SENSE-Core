@@ -200,7 +200,7 @@ The application exposes several RESTful endpoints for integration and explanatio
 **Example Request:**
 
 ```sh
-curl "http://localhost:8080/v1/api/explanations?datetime=2023-04-09T12:00:00"
+curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00"
 ```
 
 **Example Response:**
@@ -317,9 +317,9 @@ SELECT ?s ?p ?o WHERE {
 **Example Request:**
 
 ```sh
-curl -X POST http://localhost:8080/v1/api/explanations/sparql \
-     -H "Content-Type: application/sparql-query" \
-     -d 'SELECT ?s ?p ?o WHERE { ?s ?p ?o . } LIMIT 10'
+curl -X POST http://localhost:5001/v1/api/explanations/sparql \
+     -H "Content-Type: text/plain" \
+     --data "SELECT ?s ?p ?o WHERE { ?s ?p ?o . } LIMIT 10"
 ```
 
 ## License
