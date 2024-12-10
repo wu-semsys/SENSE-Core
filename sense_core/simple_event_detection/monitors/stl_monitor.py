@@ -17,6 +17,7 @@ def create_logic_specification(
     for var in procedure.parameter_bindings:
         spec.declare_var(var.name, "float")
     spec.parse()
+    spec.pastify()
     return spec
 
 
