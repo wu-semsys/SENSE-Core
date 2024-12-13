@@ -54,9 +54,10 @@ class WindowBasedMonitor(Monitor):
     Base class for monitors that work on windows.
     """
 
-    def __init__(self, procedure: EventDetectionProcedure, event_broker: EventBroker, window_size: int) -> None:
+    def __init__(self, procedure: EventDetectionProcedure, event_broker: EventBroker, window_size: int, window_complete: bool) -> None:
         super().__init__(procedure, event_broker)
         self.window_size = window_size
+        self.window_complete = window_complete
 
     def evaluate_internal(self, updates) -> List[DetectedEvent]:
         events = []
@@ -64,13 +65,14 @@ class WindowBasedMonitor(Monitor):
         for timestamp, value in updates["signal"]:
             self.signal.add_value(timestamp, value)
 
+        (last_timestamp, _) = self.signal.values[-1]
         for i, (start_time, _) in enumerate(self.signal.values):
             window_end_time = start_time + self.window_size
-            window = [(t, v) for t, v in self.signal.values[i:] if start_time <= t <= window_end_time]
 
-            events.extend(self.evaluate_window(window))
+            if not self.window_complete or last_timestamp > window_end_time: # If a complete window is requsted, there must be enough data.
+                window = [(t, v) for t, v in self.signal.values[i:] if start_time <= t <= window_end_time]
+                events.extend(self.evaluate_window(window))
 
-        (last_timestamp, _) = self.signal.values[-1]
         self.signal.clean_up(last_timestamp - self.window_size)
 
         return events

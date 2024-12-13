@@ -26,7 +26,7 @@ class StableTimeMonitor(WindowBasedMonitor):
         maximum_delta = get_required_literal_parameter(procedure, "maximum_delta")
         stable_time = get_required_literal_parameter(procedure, "stable_time")
 
-        super().__init__(procedure, event_broker, stable_time)
+        super().__init__(procedure, event_broker, stable_time, True)
         self.maximum_delta = maximum_delta
         self.stable_time = stable_time
         self.signal = TimeSeries()

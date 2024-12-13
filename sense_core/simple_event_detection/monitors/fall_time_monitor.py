@@ -26,7 +26,7 @@ class FallTimeMonitor(WindowBasedMonitor):
         delta = get_required_literal_parameter(procedure, "delta")
         fall_time = get_required_literal_parameter(procedure, "fall_time")
 
-        super().__init__(procedure, event_broker, fall_time)
+        super().__init__(procedure, event_broker, fall_time, False)
         self.delta = delta
         self.fall_time = fall_time
         self.signal = TimeSeries()

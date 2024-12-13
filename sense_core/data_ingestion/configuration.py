@@ -35,7 +35,8 @@ def load_time_configuration(json_data: dict) -> DataIngestionTimeConfiguration:
     if json_data["mode"] == "replay":
         return ReplayDataIngestionTimeConfiguration(json_data)
     
-    raise Exception(f"Unknown time mode: {json_data["mode"]}. Supported: {{'live', 'replay'}}")
+    mode = json_data["mode"]
+    raise Exception(f"Unknown time mode: {mode}. Supported: {{'live', 'replay'}}")
 
 class DataIngestionConfiguration:
     def __init__(self, config: dict) -> None:
