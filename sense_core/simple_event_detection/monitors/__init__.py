@@ -69,7 +69,8 @@ class WindowBasedMonitor(Monitor):
         for i, (start_time, _) in enumerate(self.signal.values):
             window_end_time = start_time + self.window_size
 
-            if not self.window_complete or last_timestamp > window_end_time: # If a complete window is requsted, there must be enough data.
+            # If a complete window is requested, there must be enough data.
+            if not self.window_complete or last_timestamp >= window_end_time:
                 window = [(t, v) for t, v in self.signal.values[i:] if start_time <= t <= window_end_time]
                 events.extend(self.evaluate_window(window))
 
