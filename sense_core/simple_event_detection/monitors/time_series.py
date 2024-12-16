@@ -18,8 +18,10 @@ class TimeSeries:
         bigger_timestamp_idx = None
         for i in range(0, len(self.values)):
             (timestamp, _) = self.values[i]
-            if timestamp > min_timestamp:
+            if timestamp >= min_timestamp:
                 bigger_timestamp_idx = i
+                break
 
-        if bigger_timestamp_idx > 0:
-            self.values = self.values[(bigger_timestamp_idx - 1) :]
+        if bigger_timestamp_idx != None:
+            min_idx = max(bigger_timestamp_idx - 1, 0)
+            self.values = self.values[min_idx:]

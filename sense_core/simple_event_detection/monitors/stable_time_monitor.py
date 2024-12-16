@@ -55,7 +55,7 @@ class StableTimeMonitor(WindowBasedMonitor):
 
         is_stable = not has_significant_diff
         if is_stable and not self.old_value:
-            (timestamp_int, _) = window[1]
+            (timestamp_int, _) = window[-1]
             timestamp = datetime.datetime.fromtimestamp(timestamp_int, datetime.timezone.utc)
             event = DetectedEvent(self.procedure.sensor_uri, timestamp, is_stable, self.procedure)
             events.append(event)
