@@ -25,7 +25,7 @@ This repository primarily contains the source code of all SENSE Core modules and
 
 ## SENSE Core Structure
 
-This repository provides the modules/services making up the SENSE Core. Note that the SENSE Core itself is not an executable application as it lacks use-case-specific system data. For information on how to create an instantiation of the SENSE Core, please refer to Section [Instantiation and Execution](#instantiation-and-execution).
+This repository provides the modules/services making up the SENSE Core. Note that the SENSE Core itself is not an executable application as it lacks use-case-specific system data. For information on how to create an instance of the SENSE Core, please refer to Section [Instantiation and Execution](#instantiation-and-execution).
 
 ![SENSE Core Container Structure](./doc/SENSE-Core-C4-Model-Level2-ContainerDiagram.png)
 
@@ -114,7 +114,7 @@ Currently, we use configuration files that are specific to each module, e.g., th
 Configuration files with the file ending `host.json` are intended to be used for development only. As an example, if you want to work on the data_ingestion module, you can start all other modules within their corresponding containers and execute the data_ingestion script with its corresponding data_ingestion.host.json on your host machine.
 
 ### Configuration Files for Operation
-Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instantiations. However, we provide templates for `docker.json` configuration files also via the [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository.
+Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instances. However, we provide templates for `docker.json` configuration files also via the [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository.
 
 ## GitLAB CI/CD
 CI/CD build instructions for each image are defined in .gitlab-ci.yml.
