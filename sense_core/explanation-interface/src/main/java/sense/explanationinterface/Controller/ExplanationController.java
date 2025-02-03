@@ -26,7 +26,7 @@ public class ExplanationController {
     @Autowired
     private ExplanationService explanationService;
 
-    @GetMapping()
+    @GetMapping(params = "!user")
     public ResponseEntity<?> getExplanations(@RequestParam(value = "datetime") String datetimeStr) {
         LOGGER.info("GET Request /explanations?datetime={}", datetimeStr);
 
@@ -54,7 +54,7 @@ public class ExplanationController {
         }
     }
 
-    @GetMapping()
+    @GetMapping(params = "user")
     public ResponseEntity<?> getExplanations(@RequestParam(value = "datetime") String datetimeStr,
                                              @RequestParam(value = "user") String user) {
         LOGGER.info("GET Request /explanations?datetime={}&user={}", datetimeStr, user);
