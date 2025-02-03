@@ -71,7 +71,7 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
 
     private String getStateToExplainWithUser(String datetimeStr, String user) throws Exception {
         LOGGER.trace("getStateToExplainWithUser({}, {})", datetimeStr, user);
-
+        return explanationDao.getStateToExplainWithUser(datetimeStr, user);
     }
 
     private ExplanationDto mapToDto(Explanation explanation) {
