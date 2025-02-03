@@ -10,4 +10,6 @@ public interface ExplanationDao {
     String getStateToExplain(String datetimeStr) throws Exception;
     List<Explanation> runSelectQuery(String stateToExplain) throws Exception;
     Map<String, Object> executeSparqlQuery(String sparqlQuery);
+    String getStateToExplainWithUser(String datetimeStr, String user) throws Exception;
+    public List<Explanation> runSelectQuery(String stateToExplain, String user);
 }

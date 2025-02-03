@@ -323,4 +323,77 @@ public class QueryConfig {
             "        FILTER (?t <= 'datetime_str'^^xsd:dateTime)\n" +
             "    }} ORDER BY DESC(?t)\n" +
             "    LIMIT 1";
+
+    public final String EXPLANATION_SELECT_QUERY_WITH_USER = "PREFIX sense:  <http://w3id.org/explainability/sense#>\n" +
+        "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+        "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+        "PREFIX : <http://example.org/seehub#>\n" +
+        "\n" +
+        "SELECT distinct ?mitigationoptionlabel ?causesensor ?cause ?cset ?ceet ?relation ?effectsensor ?effect ?set ?eet\n" +
+        "WHERE {\n" +
+        "\t?cause sense:causallyRelated ?effect .\n" +
+        "\t?effect (sense:causallyRelated)* :StateToExplain .\n" +
+        "\t<<?cause sense:causallyRelated ?effect>> sense:hasCausalSource ?stc .\n" +
+        "\t?stc sense:causalRelation ?relation .\n" +
+        "\t?causeobservation sosa:hasResult ?cause .\n" +
+        "\t?causesensor sosa:madeObservation ?causeobservation .\n" +
+        "\t?effectobservation sosa:hasResult ?effect .\n" +
+        "\t?effectsensor sosa:madeObservation ?effectobservation .\n" +
+        "\t?effect sense:hasStartEvent ?se .\n" +
+        "\t?effect sense:hasEndEvent ?ee .\n" +
+        "\t?seo sosa:hasResult ?se .\n" +
+        "\t?seo sosa:phenomenonTime ?set .\n" +
+        "\t?eeo sosa:hasResult ?ee .\n" +
+        "\t?eeo sosa:phenomenonTime ?eet .\n" +
+        "\t?cause sense:hasStartEvent ?cse .\n" +
+        "\t?cause sense:hasEndEvent ?cee .\n" +
+        "\t?cseo sosa:hasResult ?cse .\n" +
+        "\t?cseo sosa:phenomenonTime ?cset .\n" +
+        "\t?ceeo sosa:hasResult ?cee .\n" +
+        "\t?ceeo sosa:phenomenonTime ?ceet .\n" +
+        "    \n" +
+        "    # filter on user view access rights\n" +
+        "    ?causeplatform sosa:hosts ?causesensor .\n" +
+        "    ?user rdfs:label 'user_role' .\n" +
+        "    ?user sense:hasUserRole ?userrole .\n" +
+        "    ?userrole sense:containsAccessRights ?accessright .\n" +
+        "    ?accessright sense:allowsViewAccessTo ?causeplatform .\n" +
+        "    OPTIONAL {\n" +
+        "    \t?accessright sense:allowsControlAccessTo ?causeplatform .\n" +
+        "        ?cause sense:hasStateType ?causeType .\n" +
+        "    \t?causeType sense:hasMitigationPlan ?mitigationplan .\n" +
+        "    \t?mitigationplan sense:containsMitigationOption ?mitigationoption .\n" +
+        "    \t?mitigationoption rdfs:label ?mitigationoptionlabel .\n" +
+        "        }\n" +
+        "}";
+
+    public final String STATE_TO_EXPLAIN_WITH_USER =
+        "PREFIX : <baseURI>\n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+            "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+            "SELECT ?v WHERE {\n" +
+            "    ?v a s:State .\n" +
+            "    ?v s:hasStateType :DemandEnvelopeViolation_State .\n" +
+            "    ?v s:hasStartEvent ?e .\n" +
+            "    ?o sosa:hasResult ?e .\n" +
+            "    ?o sosa:phenomenonTime ?t .\n" +
+            "    \n" +
+            "    # Link the observation ?o back to its sensor and then to its hosting platform\n" +
+            "    ?causesensor sosa:madeObservation ?o .\n" +
+            "    ?causeplatform sosa:hosts ?causesensor .\n" +
+            "    \n" +
+            "    FILTER (?t <= 'datetime_str'^^xsd:dateTime)\n" +
+            "    \n" +
+            "    # Apply the user view access filter\n" +
+            "    ?user rdfs:label 'user_role' .\n" +
+            "    ?user s:hasUserRole ?userrole .\n" +
+            "    ?userrole s:containsAccessRights ?accessright .\n" +
+            "    ?accessright s:allowsViewAccessTo ?causeplatform .\n" +
+            "}\n" +
+            "ORDER BY DESC(?t)\n" +
+            "LIMIT 1";
+
 }

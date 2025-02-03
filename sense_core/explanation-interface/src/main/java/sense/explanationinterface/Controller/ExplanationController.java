@@ -54,6 +54,34 @@ public class ExplanationController {
         }
     }
 
+    @GetMapping()
+    public ResponseEntity<?> getExplanations(@RequestParam(value = "datetime") String datetimeStr,
+                                             @RequestParam(value = "user") String user) {
+        LOGGER.info("GET Request /explanations?datetime={}&user={}", datetimeStr, user);
+
+        if ((datetimeStr == null || datetimeStr.isEmpty()) && (user == null || user.isEmpty())) {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "datetime and user parameter is required");
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
+        try {
+            ExplanationResponseDto response = explanationService.getExplanations(datetimeStr);
+            LOGGER.info("Explanations results = {}", response);
+
+            return ResponseEntity.ok(response);
+        } catch (NoStateFoundException e) {
+            LOGGER.error("No state found: {}", e.getMessage());
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(404).body(errorResponse);
+        } catch (Exception e) {
+            LOGGER.error("An error occurred: {}", e.getMessage(), e);
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", e.getMessage());
+            return ResponseEntity.status(500).body(errorResponse);
+        }
+    }
     @PostMapping("/sparql")
     public ResponseEntity<?> executeSparqlQuery(@RequestBody String sparqlQuery) {
         LOGGER.info("POST Request /sparql with query: {}", sparqlQuery);

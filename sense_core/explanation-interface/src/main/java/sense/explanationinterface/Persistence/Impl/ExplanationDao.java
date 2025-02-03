@@ -86,6 +86,35 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     }
 
     @Override
+    public String getStateToExplainWithUser(String datetimeStr, String user) throws Exception {
+        LOGGER.trace("getStateToExplain({}, {})", datetimeStr, user);
+        initializeRepository();
+        String query = queryConfig.STATE_TO_EXPLAIN
+            .replaceAll("datetime_str", datetimeStr)
+            .replaceAll("baseURI", config.semanticModel.baseUri)
+            .replaceAll("user_role", user);
+        try (RepositoryConnection connection = repository.getConnection()) {
+            TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+
+            try (TupleQueryResult result = tupleQuery.evaluate()) {
+                if (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value v = bindingSet.getValue("v");
+                    if (v != null) {
+                        String value = v.stringValue();
+                        return value.substring(value.indexOf("#") + 1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while querying the SPARQL endpoint: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Explanation> runSelectQuery(String stateToExplain) {
         LOGGER.trace("runSelectQuery({})", stateToExplain);
         initializeRepository();
@@ -131,6 +160,53 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
         return explanations;
     }
 
+
+    @Override
+    public List<Explanation> runSelectQuery(String stateToExplain, String user) {
+        LOGGER.trace("runSelectQuery({}, {})", stateToExplain, user);
+        initializeRepository();
+        String query = queryConfig.EXPLANATION_SELECT_QUERY
+            .replaceAll("StateToExplain", stateToExplain)
+            .replaceAll("baseURI", config.semanticModel.baseUri)
+            .replaceAll("user_role", user);
+        List<Explanation> explanations = new ArrayList<>();
+
+        try (RepositoryConnection connection = repository.getConnection()) {
+            TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+
+            try (TupleQueryResult result = tupleQuery.evaluate()) {
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+
+                    Cause cause = new Cause();
+                    cause.setValue(bindingSet.getValue("cause").stringValue());
+                    cause.setSensor(bindingSet.getValue("causesensor").stringValue());
+                    cause.setStartTime(bindingSet.getValue("cset").stringValue());
+                    cause.setEndTime(bindingSet.getValue("ceet").stringValue());
+
+                    Effect effect = new Effect();
+                    effect.setValue(bindingSet.getValue("effect").stringValue());
+                    effect.setSensor(bindingSet.getValue("effectsensor").stringValue());
+                    effect.setStartTime(bindingSet.getValue("set").stringValue());
+                    effect.setEndTime(bindingSet.getValue("eet").stringValue());
+
+                    String relation = bindingSet.getValue("relation").stringValue();
+
+                    Explanation explanation = new Explanation();
+                    explanation.setCause(cause);
+                    explanation.setEffect(effect);
+                    explanation.setRelation(relation);
+
+                    explanations.add(explanation);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while querying the SPARQL endpoint: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        return explanations;
+    }
     @Override
     public Map<String, Object> executeSparqlQuery(String sparqlQuery) {
         LOGGER.trace("executeSparqlQuery({})", sparqlQuery);

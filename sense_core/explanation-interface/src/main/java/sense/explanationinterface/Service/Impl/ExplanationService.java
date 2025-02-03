@@ -46,9 +46,32 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
         return explanationDao.executeSparqlQuery(sparqlQuery);
     }
 
+    @Override
+    public ExplanationResponseDto getExplanations(String datetimeStr, String user) throws Exception {
+        LOGGER.trace("getExplanations({}, {})", datetimeStr, user);
+        String stateToExplain = getStateToExplainWithUser(datetimeStr, user);
+
+        if (stateToExplain == null) {
+            throw new NoStateFoundException("No state found for the provided datetime");
+        }
+
+        List<Explanation> explanations = explanationDao.runSelectQuery(stateToExplain, user);
+
+        List<ExplanationDto> explanationDtos = explanations.stream()
+            .map(this::mapToDto)
+            .collect(Collectors.toList());
+
+        return new ExplanationResponseDto(stateToExplain, explanationDtos);
+    }
+
     private String getStateToExplain(String datetimeStr) throws Exception {
         LOGGER.trace("getStateToExplain({})", datetimeStr);
         return explanationDao.getStateToExplain(datetimeStr);
+    }
+
+    private String getStateToExplainWithUser(String datetimeStr, String user) throws Exception {
+        LOGGER.trace("getStateToExplainWithUser({}, {})", datetimeStr, user);
+
     }
 
     private ExplanationDto mapToDto(Explanation explanation) {
