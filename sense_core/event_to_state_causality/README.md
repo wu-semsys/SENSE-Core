@@ -23,7 +23,7 @@ This repository contains a Java-based application that connects to an MQTT broke
 Clone the repository:
 
 ```sh
-git clone https://git.ai.wu.ac.at/sense/sense-core.git
+git clone https://github.com/wu-semsys/SENSE-Core.git
 cd event-to-state-causality
 ```
 To run the application, build and run the Docker container or include it in a docker compose. Example to build and run the Docker container:

@@ -40,7 +40,7 @@ The **Explanation Interface** serves as a bridge between semantic models and app
 ### 1. Clone the Repository
 
 ```sh
-git clone https://git.ai.wu.ac.at/sense/sense-core.git
+git clone https://github.com/wu-semsys/SENSE-Core.git
 cd sense_core/explanation-interface
 ```
 

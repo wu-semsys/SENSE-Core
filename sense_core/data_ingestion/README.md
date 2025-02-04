@@ -2,6 +2,12 @@
 
 This service is responsible for relaying and integrating sensor readings into the SENSE system.
 
+## Building the Docker Image
+Execute the following command in this directory to build the docker image for this module:
+```
+docker build -t sense-core/data-ingestion:v1.0 .
+```
+
 ## Configuration
 
 The Data Ingestion service can be configured via a json file. The user provides the path to this configuration file when invoking the service. This section details the configuration structure.

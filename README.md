@@ -2,26 +2,14 @@
 
 The SENSE Core is a result of the Semantics-based Explanation of Cyber-physical Systems (SENSE) research project. For basic information, please refer to the [SENSE homepage](https://sense-project.net/). The SENSE Core is a container-based application. It is structured and implemented according to the [Auditable SENSE Architecture](https://sense-project.net/wp-content/uploads/2024/06/D3_1_Auditable-SENSE-architecture.pdf).
 
-This repository primaraliy contains the source code of all SENSE Core modules, and instructions (Dockerfiles) for building images for each of the modules. We also provide pre-built image files. However, you currently need access to container registry at [registry.ai.wu.ac.at](registry.ai.wu.ac.at).
-
+This repository primaraliy contains the source code of all SENSE Core modules, and instructions (Dockerfiles) for building images for each of the modules. 
 ## Table of Contents
 
-- [TODOs](#todos)
 - [SENSE Core Structure](#sense-core-structure)
 - [Instantiation and Execution](#instantiation-and-execution)
 - [Structure of the Repository](#structure-of-the-repository)
 - [Named Graphs and Namespaces](#named-graphs-and-namespaces)
 - [Configuration Files](#configuration-files)
-- [GitLAB CI/CD](#gitlab-cicd)
-- [License](#license)
-- [References](#references)
-- [Contributing](#contributing)
-- [Contact](#contact)
-
-## TODOs
-
-- [ ] License?
-- [ ] Replace the links to the Demo Use Case and the Use Case Template repositories when they are published to GitHub
 
 ## SENSE Core Structure
 
@@ -41,7 +29,7 @@ InfluxDB time-series database, as this often available in existing CPSs. The mod
 - **explanation-interface:** This module contains a Java-based application that provides explanations for specific states identified from a semantic model and if needed a way to integrates chatbot data. The application connects to a SPARQL endpoint to fetch causal relationships and returns them as JSON responses via a Spring-boot API. [Further Information](sense_core/explanation-interface/README.md)
 
 ## System Requirements
-The system requirements below were obtained by running the [Demo Use Case](https://git.ai.wu.ac.at/sense/seehub) via the following commands:
+The system requirements below were obtained by running the [Demo Use Case](https://github.com/wu-semsys/SENSE-Demo-Use-Case) via the following commands:
  
 ```
 docker ps -s # virtual size = read-only image data used by the container plus the container's writable layer
@@ -68,11 +56,22 @@ docker stats
 ## Instantiation and Execution
 As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". We provide two possible approaches: [(1)](#use-the-demo-use-case) starting with an executeable demo use case and [(2)](#use-the-use-case-template) starting with a use case template.
 
+For both options, you need to create Docker images of the SENSE Core modules first:
+```
+cd sense_core
+docker build -t sense-core/data-ingestion:v1.0 -f data_ingestion.Containerfile .
+docker build -t sense-core/event-to-state-causality:v1.0 -f event_to_state_causality.Containerfile .
+docker build -t sense-core/explanation-interface:v1.0 -f explanation_interface.Containerfile .
+docker build -t sense-core/knowledgebase:v1.0 -f knowledgebase.amd64.Containerfile .
+docker build -t sense-core/semantic-event-log-bridge:v1.0 -f semantic_event_log_bridge.Containerfile .
+docker build -t sense-core/simple-event-detection:v1.0 -f simple_event_detection.Containerfile .
+```
+
 ### Use the Demo Use Case
-You can use our [Demo Use Case](https://git.ai.wu.ac.at/sense/seehub) of the SENSE Core to quickly start with a running demo application. Instructions on about how to get it up and running are provided in the README of the Demo Use Case repository.
+You can use our [Demo Use Case](https://github.com/wu-semsys/SENSE-Demo-Use-Case) of the SENSE Core to quickly start with a running demo application. Instructions on about how to get it up and running are provided in the README of the Demo Use Case repository.
 
 ### Use the Use Case Template
-We also provide this [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository as a starting point for creating a new SENSE instance. Instructions on about how to get it up and running are provided in the README of the Use Case Template repository. 
+We also provide this [Use Case Template](https://github.com/wu-semsys/SENSE-Use-Case-Template) repository as a starting point for creating a new SENSE instance. Instructions on about how to get it up and running are provided in the README of the Use Case Template repository. 
 
 
 ## Structure of the Repository
@@ -105,7 +104,11 @@ We also provide this [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-
 ```
 
 ## Named Graphs and Namespaces
-Data within the knowledgebase is organized in different named graphs according to  [SENSE Named Graph List.xlsx](https://wu.sharepoint.com/:x:/r/sites/PR-FFGSENSE/Freigegebene%20Dokumente/General/1_WorkPackages/WP4_Semantics-basedEventExplainability/4.1%20SENSE%20Semantic%20Model/SENSE%20Named%20Graph%20List.xlsx?d=w136542f1c78046dfa38a3af2cea52535&csf=1&web=1&e=01o5Rt)
+Data within the knowledgebase is organized in different named graphs with the folling IRIs (note: the graphs containing static and dynamic use-case-specific information contain the use case name as part of their IRIs): 
+* SENSE Ontology: http://w3id.org/explainability/graph/ontology
+* Static use-case specific information (e.g., platforms): http://w3id.org/explainability/graph/use_case_name_static
+* Dynamic use-case-specific information (e.g., actual events): http://w3id.org/explainability/graph/use_case_name_dynamic
+ [SENSE Named Graph List.xlsx](https://wu.sharepoint.com/:x:/r/sites/PR-FFGSENSE/Freigegebene%20Dokumente/General/1_WorkPackages/WP4_Semantics-basedEventExplainability/4.1%20SENSE%20Semantic%20Model/SENSE%20Named%20Graph%20List.xlsx?d=w136542f1c78046dfa38a3af2cea52535&csf=1&web=1&e=01o5Rt)
 
 ## Configuration Files
 Currently, we use configuration files that are specific to each module, e.g., there is a configuration file for the knowledgebase, another one for data_ingestion, etc. Eventually, we plan to merge these configuration files into one file, eliminating redundant entries/definitions.
@@ -114,15 +117,4 @@ Currently, we use configuration files that are specific to each module, e.g., th
 Configuration files with the file ending `host.json` are intended to be used for development only. As an example, if you want to work on the data_ingestion module, you can start all other modules within their corresponding containers and execute the data_ingestion script with its corresponding data_ingestion.host.json on your host machine.
 
 ### Configuration Files for Operation
-Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instantiations. However, we provide templates for `docker.json` configuration files also via the [Use Case Template](https://git.ai.wu.ac.at/sense/use-case-template) repository.
-
-## GitLAB CI/CD
-CI/CD build instructions for each image are defined in .gitlab-ci.yml.
-
-## License
-
-## References
-
-## Contributing
-
-## Contact
+Configuration files with the file ending `docker.json` are intended to be used when running the module in its corresponding container. They are supplied to the containers via volume mounts. As the SENSE Core is not intended to be executed, configuration files with the file ending `docker.json` should only be located in the corresponding instantiations. However, we provide templates for `docker.json` configuration files also via the [Use Case Template](https://github.com/wu-semsys/SENSE-Use-Case-Template) repository.

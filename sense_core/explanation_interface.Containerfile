@@ -2,10 +2,10 @@ FROM maven:3.8.4-openjdk-17 AS build
 
 WORKDIR /opt/explanation-interface
 
-COPY pom.xml .
+COPY explanation_interface/pom.xml .
 RUN mvn dependency:go-offline
 
-COPY src ./src
+COPY explanation_interface/src ./src
 RUN mvn package
 
 FROM openjdk:20-ea-11-jdk-slim
