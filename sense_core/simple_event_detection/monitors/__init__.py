@@ -12,10 +12,12 @@ class Monitor:
     def __init__(self, procedure: EventDetectionProcedure, event_broker: EventBroker) -> None:
         self.procedure = procedure
         self.event_broker = event_broker
-        # TODO Support multiple bindings to same signal
-        self.listening_for = {
-            var.signal_uri: var.name for var in procedure.parameter_bindings if isinstance(var, SignalParameterBinding)
-        }
+        self.listening_for = dict()
+        for var in procedure.parameter_bindings:
+            if isinstance(var, SignalParameterBinding):
+                if var.signal_uri not in self.listening_for:
+                    self.listening_for[var.signal_uri] = []
+                self.listening_for[var.signal_uri].append(var.name)
         self.updates = dict()
         self.all_variables_initialized = False
 
@@ -23,10 +25,11 @@ class Monitor:
         if not event.source in self.listening_for:
             return
 
-        var = self.listening_for[event.source]
-        if not var in self.updates:
-            self.updates[var] = []
-        self.updates[var].append((int(event.timestamp.timestamp()), event.value))
+        vars = self.listening_for[event.source]
+        for var in vars:
+            if not var in self.updates:
+                self.updates[var] = []
+            self.updates[var].append((int(event.timestamp.timestamp()), event.value))
 
     def evaluate(self):
         if not self.all_variables_initialized and len(self.updates) < len(self.listening_for):
