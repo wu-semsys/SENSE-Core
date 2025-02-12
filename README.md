@@ -54,9 +54,14 @@ docker stats
 | TOTAL | 2002 MB | 2144 MB |
 
 ## Instantiation and Execution
-As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". We provide two possible approaches: [(1)](#use-the-demo-use-case) starting with an executeable demo use case and [(2)](#use-the-use-case-template) starting with a use case template.
+As mentioned, the SENSE Core is not an executable application by itself but needs to be configured according to the specific use case. This process is referred to as "instantiation". We provide two possible approaches: [(1)](#use-the-demo-use-case) starting with an executeable demo use case and [(2)](#use-the-use-case-template) starting with a use case template. For both options, you need to create Docker images of the SENSE Core modules first. 
 
-For both options, you need to create Docker images of the SENSE Core modules first:
+### Build the Docker Images
+#### Using Scripts
+For building the Docker images, we provide scripts named build-images.bat (for Windows) and build-images.sh) for Linux. 
+
+#### Using the Command Line Interface
+Alternatively, you can use the following commands:
 ```
 cd sense_core
 docker build -t sense-core/data-ingestion:v1.0 -f data_ingestion.Containerfile .
