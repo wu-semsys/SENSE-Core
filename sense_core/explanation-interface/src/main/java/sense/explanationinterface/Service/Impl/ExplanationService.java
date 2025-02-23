@@ -52,7 +52,7 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
         String stateToExplain = getStateToExplainWithUser(datetimeStr, user);
 
         if (stateToExplain == null) {
-            throw new NoStateFoundException("No state found for the provided datetime");
+            throw new NoStateFoundException("No state found for the provided datetime and user");
         }
 
         List<Explanation> explanations = explanationDao.runSelectQuery(stateToExplain, user);

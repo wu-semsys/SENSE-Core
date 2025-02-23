@@ -66,7 +66,7 @@ public class ExplanationController {
         }
 
         try {
-            ExplanationResponseDto response = explanationService.getExplanations(datetimeStr);
+            ExplanationResponseDto response = explanationService.getExplanations(datetimeStr, user);
             LOGGER.info("Explanations results = {}", response);
 
             return ResponseEntity.ok(response);

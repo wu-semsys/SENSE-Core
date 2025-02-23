@@ -89,7 +89,7 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     public String getStateToExplainWithUser(String datetimeStr, String user) throws Exception {
         LOGGER.trace("getStateToExplain({}, {})", datetimeStr, user);
         initializeRepository();
-        String query = queryConfig.STATE_TO_EXPLAIN
+        String query = queryConfig.STATE_TO_EXPLAIN_WITH_USER
             .replaceAll("datetime_str", datetimeStr)
             .replaceAll("baseURI", config.semanticModel.baseUri)
             .replaceAll("user_role", user);
