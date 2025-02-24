@@ -165,7 +165,7 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     public List<Explanation> runSelectQuery(String stateToExplain, String user) {
         LOGGER.trace("runSelectQuery({}, {})", stateToExplain, user);
         initializeRepository();
-        String query = queryConfig.EXPLANATION_SELECT_QUERY
+        String query = queryConfig.EXPLANATION_SELECT_QUERY_WITH_USER
             .replaceAll("StateToExplain", stateToExplain)
             .replaceAll("baseURI", config.semanticModel.baseUri)
             .replaceAll("user_role", user);
