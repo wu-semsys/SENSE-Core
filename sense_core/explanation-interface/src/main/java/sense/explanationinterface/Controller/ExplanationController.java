@@ -67,7 +67,7 @@ public class ExplanationController {
 
         try {
             ExplanationResponseDto response = explanationService.getExplanations(datetimeStr, user);
-            LOGGER.info("Explanations results = {}", response);
+            LOGGER.debug("Explanations results = {}", response);
 
             return ResponseEntity.ok(response);
         } catch (NoStateFoundException e) {

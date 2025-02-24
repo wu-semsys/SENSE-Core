@@ -86,6 +86,10 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
                 cause.getEndTime()
         );
 
+        if (cause.getMitigation() != null) {
+            causeDto.setMitigation(cause.getMitigation());
+        }
+
         EffectDto effectDto = new EffectDto(
                 effect.getValue(),
                 effect.getSensor(),
