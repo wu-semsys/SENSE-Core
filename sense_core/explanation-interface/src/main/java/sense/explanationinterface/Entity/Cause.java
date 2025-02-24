@@ -14,4 +14,5 @@ public class Cause {
     private String sensor;
     private String startTime;
     private String endTime;
+    private String mitigation;
 }

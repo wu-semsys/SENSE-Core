@@ -183,6 +183,7 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
                     cause.setSensor(bindingSet.getValue("causesensor").stringValue());
                     cause.setStartTime(bindingSet.getValue("cset").stringValue());
                     cause.setEndTime(bindingSet.getValue("ceet").stringValue());
+                    cause.setMitigation(bindingSet.getValue("mitigationoptionlabel").stringValue());
 
                     Effect effect = new Effect();
                     effect.setValue(bindingSet.getValue("effect").stringValue());
