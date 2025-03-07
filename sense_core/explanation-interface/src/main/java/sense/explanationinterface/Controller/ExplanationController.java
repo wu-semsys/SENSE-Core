@@ -26,7 +26,7 @@ public class ExplanationController {
     @Autowired
     private ExplanationService explanationService;
 
-    @GetMapping(params = "!user")
+    @GetMapping(params = {"!user", "!state"})
     public ResponseEntity<?> getExplanations(@RequestParam(value = "datetime") String datetimeStr) {
         LOGGER.info("GET Request /explanations?datetime={}", datetimeStr);
 
@@ -54,19 +54,21 @@ public class ExplanationController {
         }
     }
 
-    @GetMapping(params = "user")
+    @GetMapping()
     public ResponseEntity<?> getExplanations(@RequestParam(value = "datetime") String datetimeStr,
-                                             @RequestParam(value = "user") String user) {
-        LOGGER.info("GET Request /explanations?datetime={}&user={}", datetimeStr, user);
+                                             @RequestParam(value = "user", required = false) String user,
+                                             @RequestParam(value = "state", required = false) String state) {
+        LOGGER.info("GET Request /explanations?datetime={}&user={}&state={}", datetimeStr, user, state);
 
-        if ((datetimeStr == null || datetimeStr.isEmpty()) && (user == null || user.isEmpty())) {
+        if ((datetimeStr == null || datetimeStr.isEmpty()) && (
+            (user == null || user.isEmpty()) || (state == null || state.isEmpty()))) {
             Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("error", "datetime and user parameter is required");
+            errorResponse.put("error", "datetime and either user or state parameter is required");
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
         try {
-            ExplanationResponseDto response = explanationService.getExplanations(datetimeStr, user);
+            ExplanationResponseDto response = explanationService.getExplanations(datetimeStr, user, state);
             LOGGER.debug("Explanations results = {}", response);
 
             return ResponseEntity.ok(response);

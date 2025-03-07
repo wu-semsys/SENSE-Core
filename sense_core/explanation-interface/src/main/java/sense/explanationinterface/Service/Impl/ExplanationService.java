@@ -13,6 +13,8 @@ import sense.explanationinterface.Entity.Effect;
 import sense.explanationinterface.Entity.Explanation;
 import sense.explanationinterface.Exception.NoStateFoundException;
 import sense.explanationinterface.Persistence.ExplanationDao;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,15 +49,19 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
     }
 
     @Override
-    public ExplanationResponseDto getExplanations(String datetimeStr, String user) throws Exception {
-        LOGGER.trace("getExplanations({}, {})", datetimeStr, user);
-        String stateToExplain = getStateToExplainWithUser(datetimeStr, user);
-
+    public ExplanationResponseDto getExplanations(String datetimeStr, String user, String state) throws Exception {
+        LOGGER.trace("getExplanations({}, {}, {})", datetimeStr, user, state);
+        String stateToExplain = getStateToExplainWithUser(datetimeStr, user, state);
+        LOGGER.info("{}", stateToExplain);
         if (stateToExplain == null) {
             throw new NoStateFoundException("No state found for the provided datetime and user");
         }
-
-        List<Explanation> explanations = explanationDao.runSelectQuery(stateToExplain, user);
+        List<Explanation> explanations = new ArrayList<>();
+        if (user == null || user.isEmpty()) {
+            explanations = explanationDao.runSelectQuery(stateToExplain);
+        } else {
+            explanations = explanationDao.runSelectQuery(stateToExplain, user);
+        }
 
         List<ExplanationDto> explanationDtos = explanations.stream()
             .map(this::mapToDto)
@@ -69,9 +75,13 @@ public class ExplanationService implements sense.explanationinterface.Service.Ex
         return explanationDao.getStateToExplain(datetimeStr);
     }
 
-    private String getStateToExplainWithUser(String datetimeStr, String user) throws Exception {
-        LOGGER.trace("getStateToExplainWithUser({}, {})", datetimeStr, user);
-        return explanationDao.getStateToExplainWithUser(datetimeStr, user);
+    private String getStateToExplainWithUser(String datetimeStr, String user, String state) throws Exception {
+        LOGGER.trace("getStateToExplainWithUser({}, {}, {})", datetimeStr, user, state);
+        if (user == null || user.isEmpty()) {
+            return explanationDao.getSpecificStateToExplain(datetimeStr, state);
+        } else {
+            return explanationDao.getStateToExplainWithUser(datetimeStr, user, state);
+        }
     }
 
     private ExplanationDto mapToDto(Explanation explanation) {

@@ -398,4 +398,51 @@ public class QueryConfig {
             "ORDER BY DESC(?t)\n" +
             "LIMIT 1";
 
+    public final String STATE_TO_EXPLAIN_WITH_USER_AND_STATE =
+        "PREFIX : <baseURI>\n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+            "PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+            "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+            "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
+            "SELECT ?v WHERE {\n" +
+            "    ?v a s:State .\n" +
+            "    ?v s:hasStateType ?st .\n" +
+            "    ?st s:isTriggerState true .\n" +
+            "    ?st rdfs:label ?stName .\n" +
+            "    ?v s:hasStartEvent ?e .\n" +
+            "    ?o sosa:hasResult ?e .\n" +
+            "    ?o sosa:phenomenonTime ?t .\n" +
+            "    \n" +
+            "    # Link the observation ?o back to its sensor and then to its hosting platform\n" +
+            "    ?causesensor sosa:madeObservation ?o .\n" +
+            "    ?causeplatform sosa:hosts ?causesensor .\n" +
+            "    \n" +
+            "    FILTER (?t <= 'datetime_str'^^xsd:dateTime)\n" +
+            "    FILTER CONTAINS(LCASE(?stName), LCASE('state_type'))\n" +
+            "    \n" +
+            "    # Apply the user view access filter\n" +
+            "    ?user rdfs:label 'user_role' .\n" +
+            "    ?user s:hasUserRole ?userrole .\n" +
+            "    ?userrole s:containsAccessRights ?accessright .\n" +
+            "    ?accessright s:allowsViewAccessTo ?causeplatform .\n" +
+            "}\n" +
+            "ORDER BY DESC(?t)\n" +
+            "LIMIT 1";
+
+    public final String STATE_TO_EXPLAIN_WITH_STATE = "PREFIX : <baseURI>\n" +
+        "    PREFIX s: <http://w3id.org/explainability/sense#>\n" +
+        "    PREFIX sosa: <http://www.w3.org/ns/sosa/>\n" +
+        "    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
+        "    SELECT ?v WHERE {{ \n" +
+        "        ?v a s:State .\n" +
+        "        ?v s:hasStateType ?st .\n" +
+        "        ?st s:isTriggerState true .\n" +
+        "        ?st rdfs:label ?stName .\n" +
+        "        ?v s:hasStartEvent ?e .\n" +
+        "        ?o sosa:hasResult ?e .\n" +
+        "        ?o sosa:phenomenonTime ?t .\n" +
+        "        FILTER (?t <= 'datetime_str'^^xsd:dateTime)\n" +
+        "        FILTER CONTAINS(LCASE(?stName), LCASE('state_type'))\n" +
+        "    }} ORDER BY DESC(?t)\n" +
+        "    LIMIT 1";
 }
