@@ -316,7 +316,8 @@ public class QueryConfig {
             "    PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>\n" +
             "    SELECT ?v WHERE {{ \n" +
             "        ?v a s:State .\n" +
-            "        ?v s:hasStateType :DemandEnvelopeViolation_State .\n" +
+            "        ?v s:hasStateType ?st .\n" +
+            "        ?st s:isTriggerState true .\n" +
             "        ?v s:hasStartEvent ?e .\n" +
             "        ?o sosa:hasResult ?e .\n" +
             "        ?o sosa:phenomenonTime ?t .\n" +
@@ -376,7 +377,8 @@ public class QueryConfig {
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\n" +
             "SELECT ?v WHERE {\n" +
             "    ?v a s:State .\n" +
-            "    ?v s:hasStateType :DemandEnvelopeViolation_State .\n" +
+            "    ?v s:hasStateType ?st .\n" +
+            "    ?st s:isTriggerState true .\n" +
             "    ?v s:hasStartEvent ?e .\n" +
             "    ?o sosa:hasResult ?e .\n" +
             "    ?o sosa:phenomenonTime ?t .\n" +
