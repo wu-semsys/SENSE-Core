@@ -192,7 +192,7 @@ The application exposes several RESTful endpoints for integration and explanatio
 
 **Endpoint:** `GET /v1/api/explanations`
 
-**Description:** Fetches explanations for a specified state at the nearest given datetime.
+**Description:** Fetches explanations for a trigger state at the nearest given datetime.
 
 **Request Parameters:**
 
@@ -259,17 +259,18 @@ curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00"
 
 **Endpoint:** `GET /v1/api/explanations`
 
-**Description:** Fetches explanations for a specified state at the nearest given datetime.
+**Description:** Fetches explanations for a specified state and/or user at the nearest given datetime.
 
 **Request Parameters:**
 
 - `datetime` (required): The datetime string to identify the state to explain (e.g., `2023-04-09T12:00:00`).
-- `user` (required): The user role (e.g., EVUser1)
+- `user`: The user role (e.g., EVUser1).
+- `state`: The state (e.g., demand/battery). It does not need the full state name, just a part of it.
 
 **Example Request:**
 
 ```sh
-curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00?user=EVUser1"
+curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00&user=EVUser1&state=demand"
 ```
 
 **Example Response:**
