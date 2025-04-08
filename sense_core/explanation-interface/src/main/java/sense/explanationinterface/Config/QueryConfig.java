@@ -176,7 +176,7 @@ public class QueryConfig {
             "PREFIX mod: <https://w3id.org/mod#> \n" +
             "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n" +
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
-            "PREFIX s: <http://example.org/sense-ontology#> \n" +
+            "PREFIX s: <http://w3id.org/explainability/sense#> \n" +
             "PREFIX ssn: <https://www.w3.org/ns/ssn/> \n" +
             "\n" +
             "insert {\n" +
