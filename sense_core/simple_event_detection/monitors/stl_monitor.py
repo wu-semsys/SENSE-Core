@@ -42,12 +42,15 @@ class STLMonitor(Monitor):
         step_updates = list(updates.items())
         robustness = self.specification.update(*step_updates)
         for t, r in robustness:
-            boolean_value = r >= 0
-            if boolean_value == True and self.old_value == False:
-                timestamp = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
-                event = DetectedEvent(self.procedure.sensor_uri, timestamp, boolean_value, self.procedure)
-                events.append(event)
-            self.old_value = boolean_value
+            # If the robustness is exactly zero, the specification is between being fulfilled and violated.
+            # If this is the case we simply do nothing for this iteration.
+            if r != 0:
+                boolean_value = r > 0
+                if boolean_value == True and self.old_value == False:
+                    timestamp = datetime.datetime.fromtimestamp(t, datetime.timezone.utc)
+                    event = DetectedEvent(self.procedure.sensor_uri, timestamp, boolean_value, self.procedure)
+                    events.append(event)
+                self.old_value = boolean_value
 
         return events
 
