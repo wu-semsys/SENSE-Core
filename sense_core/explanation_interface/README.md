@@ -13,6 +13,7 @@ The **Explanation Interface** is a Spring Boot-based Java application designed t
 - [API Documentation](#api-documentation)
   - [Integration Endpoint](#integration-endpoint)
   - [Explanations Endpoint](#explanations-endpoint)
+  - [User Centered Explanations Endpoint](#user-centered-explanations-endpoint)
   - [SPARQL Query Endpoint](#sparql-query-endpoint)
 - [License](#license)
 
@@ -191,7 +192,7 @@ The application exposes several RESTful endpoints for integration and explanatio
 
 **Endpoint:** `GET /v1/api/explanations`
 
-**Description:** Fetches explanations for a specified state at the nearest given datetime.
+**Description:** Fetches explanations for a trigger state at the nearest given datetime.
 
 **Request Parameters:**
 
@@ -243,6 +244,67 @@ curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00"
     ```json
     {
         "error": "No state found for the provided datetime"
+    }
+    ```
+
+- **500 Internal Server Error**
+
+    ```json
+    {
+        "error": "An unexpected error occurred."
+    }
+    ```
+
+### User Centered Explanations Endpoint
+
+**Endpoint:** `GET /v1/api/explanations`
+
+**Description:** Fetches explanations for a specified state and/or user at the nearest given datetime.
+
+**Request Parameters:**
+
+- `datetime` (required): The datetime string to identify the state to explain (e.g., `2023-04-09T12:00:00`).
+- `user`: The user role (e.g., EVUser1).
+- `state`: The state (e.g., demand/battery). It does not need the full state name, just a part of it.
+
+**Example Request:**
+
+```sh
+curl "http://localhost:5001/v1/api/explanations?datetime=2023-04-09T12:00:00&user=EVUser1&state=demand"
+```
+
+**Example Response:**
+
+```json
+{
+    "stateToExplain": "Violation_State_UUID",
+    "explanations": [
+        {
+            "cause": {
+                "value": "http://w3id.org/explainability/sense#Violation_State_UUID",
+                "sensor": "http://example.org/projectName#Sensor",
+                "startTime": "2023-04-09T11:00:00Z",
+                "endTime": "2023-04-09T11:30:00Z"
+            },
+            "effect": {
+                "value": "http://w3id.org/explainability/sense#Violation_State_UUID",
+                "sensor": "http://example.org/projectName#Sensor",
+                "startTime": "2023-04-09T11:00:00Z",
+                "endTime": "2023-04-09T11:30:00Z"
+            },
+            "relation": "http://w3id.org/explainability/sense#causes"
+        }
+    ]
+}
+```
+
+**Error Responses:**
+
+- **404 Not Found**
+
+    ```json
+    {
+        "error": "No state found for the provided datetime and user"
     }
     ```
 

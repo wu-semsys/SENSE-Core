@@ -14,4 +14,12 @@ public class CauseDto {
     private String sensor;
     private String startTime;
     private String endTime;
+    private String mitigation;
+
+    public CauseDto(String value, String sensor, String startTime, String endTime) {
+        this.value = value;
+        this.sensor = sensor;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
 }

@@ -86,6 +86,49 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
     }
 
     @Override
+    public String getStateToExplainWithUser(String datetimeStr, String user, String state) throws Exception {
+        LOGGER.trace("getStateToExplain({}, {}, {})", datetimeStr, user, state);
+        initializeRepository();
+        String query = "";
+        if (state == null) {
+            query = queryConfig.STATE_TO_EXPLAIN_WITH_USER
+                .replaceAll("datetime_str", datetimeStr)
+                .replaceAll("baseURI", config.semanticModel.baseUri)
+                .replaceAll("user_role", user);
+        } else if (state != null || !state.isEmpty()) {
+            query = queryConfig.STATE_TO_EXPLAIN_WITH_USER_AND_STATE
+                .replaceAll("datetime_str", datetimeStr)
+                .replaceAll("baseURI", config.semanticModel.baseUri)
+                .replaceAll("user_role", user)
+                .replaceAll("state_type", state);
+        } else {
+            query = queryConfig.STATE_TO_EXPLAIN_WITH_USER
+                .replaceAll("datetime_str", datetimeStr)
+                .replaceAll("baseURI", config.semanticModel.baseUri)
+                .replaceAll("user_role", user);
+        }
+        try (RepositoryConnection connection = repository.getConnection()) {
+            TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+
+            try (TupleQueryResult result = tupleQuery.evaluate()) {
+                if (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value v = bindingSet.getValue("v");
+                    if (v != null) {
+                        String value = v.stringValue();
+                        return value.substring(value.indexOf("#") + 1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while querying the SPARQL endpoint: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        return null;
+    }
+
+    @Override
     public List<Explanation> runSelectQuery(String stateToExplain) {
         LOGGER.trace("runSelectQuery({})", stateToExplain);
         initializeRepository();
@@ -129,6 +172,86 @@ public class ExplanationDao implements sense.explanationinterface.Persistence.Ex
         }
 
         return explanations;
+    }
+
+
+    @Override
+    public List<Explanation> runSelectQuery(String stateToExplain, String user) {
+        LOGGER.trace("runSelectQuery({}, {})", stateToExplain, user);
+        initializeRepository();
+        String query = queryConfig.EXPLANATION_SELECT_QUERY_WITH_USER
+            .replaceAll("StateToExplain", stateToExplain)
+            .replaceAll("baseURI", config.semanticModel.baseUri)
+            .replaceAll("user_role", user);
+        List<Explanation> explanations = new ArrayList<>();
+
+        try (RepositoryConnection connection = repository.getConnection()) {
+            TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+
+            try (TupleQueryResult result = tupleQuery.evaluate()) {
+                while (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+
+                    Cause cause = new Cause();
+                    cause.setValue(bindingSet.getValue("cause").stringValue());
+                    cause.setSensor(bindingSet.getValue("causesensor").stringValue());
+                    cause.setStartTime(bindingSet.getValue("cset").stringValue());
+                    cause.setEndTime(bindingSet.getValue("ceet").stringValue());
+                    if (bindingSet.getValue("mitigationoptionlabel") != null) {
+                        LOGGER.trace(bindingSet.getValue("mitigationoptionlabel").stringValue());
+                        cause.setMitigation(bindingSet.getValue("mitigationoptionlabel").stringValue());
+                    }
+                    Effect effect = new Effect();
+                    effect.setValue(bindingSet.getValue("effect").stringValue());
+                    effect.setSensor(bindingSet.getValue("effectsensor").stringValue());
+                    effect.setStartTime(bindingSet.getValue("set").stringValue());
+                    effect.setEndTime(bindingSet.getValue("eet").stringValue());
+
+                    String relation = bindingSet.getValue("relation").stringValue();
+
+                    Explanation explanation = new Explanation();
+                    explanation.setCause(cause);
+                    explanation.setEffect(effect);
+                    explanation.setRelation(relation);
+
+                    explanations.add(explanation);
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while querying the SPARQL endpoint: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        return explanations;
+    }
+
+    @Override
+    public String getSpecificStateToExplain(String datetimeStr, String state) {
+        LOGGER.trace("getSpecificStateToExplain({}, {})", datetimeStr, state);
+        initializeRepository();
+        String query = queryConfig.STATE_TO_EXPLAIN_WITH_STATE
+            .replaceAll("datetime_str", datetimeStr)
+            .replaceAll("baseURI", config.semanticModel.baseUri)
+            .replaceAll("state_type", state);
+        try (RepositoryConnection connection = repository.getConnection()) {
+            TupleQuery tupleQuery = connection.prepareTupleQuery(query);
+
+            try (TupleQueryResult result = tupleQuery.evaluate()) {
+                if (result.hasNext()) {
+                    BindingSet bindingSet = result.next();
+                    Value v = bindingSet.getValue("v");
+                    if (v != null) {
+                        String value = v.stringValue();
+                        return value.substring(value.indexOf("#") + 1);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            LOGGER.error("An error occurred while querying the SPARQL endpoint: {}", e.getMessage(), e);
+            throw e;
+        }
+
+        return null;
     }
 
     @Override
